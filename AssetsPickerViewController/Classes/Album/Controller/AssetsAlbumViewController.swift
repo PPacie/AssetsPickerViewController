@@ -93,6 +93,8 @@ open class AssetsAlbumViewController: UIViewController {
         setupCommon()
         setupBarButtonItems()
         
+        self.navigationController?.navigationBar.isHidden = true
+        
         AssetsManager.shared.authorize(completion: { [weak self] isAuthorized in
             if isAuthorized {
                 AssetsManager.shared.fetchAlbums { (_) in

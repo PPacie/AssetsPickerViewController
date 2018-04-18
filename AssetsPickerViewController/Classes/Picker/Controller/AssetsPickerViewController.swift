@@ -45,6 +45,19 @@ open class AssetsPickerViewController: UINavigationController {
         return AssetsPhotoViewController(pickerConfig: config)
     }()
     
+    open lazy var albumViewController: AssetsAlbumViewController = {
+        var config: AssetsPickerConfig!
+        if let pickerConfig = self.pickerConfig {
+            config = pickerConfig.prepare()
+        } else {
+            config = AssetsPickerConfig().prepare()
+        }
+        config.albumIsShowEmptyAlbum = false
+        self.pickerConfig = config
+        AssetsManager.shared.pickerConfig = config
+        return AssetsAlbumViewController(pickerConfig: pickerConfig)
+    }()
+    
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
@@ -65,11 +78,22 @@ open class AssetsPickerViewController: UINavigationController {
         TinyLog.isShowInfoLog = isShowLog
         TinyLog.isShowErrorLog = isShowLog
         AssetsManager.shared.registerObserver()
-        viewControllers = [photoViewController]
+        albumViewController.delegate = self
+        viewControllers = [albumViewController]
     }
     
     deinit {
         AssetsManager.shared.clear()
         logd("Released \(type(of: self))")
     }
+}
+extension AssetsPickerViewController: AssetsAlbumViewControllerDelegate {
+    
+    public func assetsAlbumViewControllerCancelled(controller: AssetsAlbumViewController) {}
+    
+    public func assetsAlbumViewController(controller: AssetsAlbumViewController, selected album: PHAssetCollection) {
+        photoViewController.select(album: album)
+        navigationController?.pushViewController(photoViewController, animated: true)
+    }
+    
 }

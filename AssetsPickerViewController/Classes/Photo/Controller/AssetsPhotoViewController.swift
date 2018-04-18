@@ -101,6 +101,8 @@ open class AssetsPhotoViewController: UIViewController {
     init(pickerConfig: AssetsPickerConfig) {
         self.init()
         self.pickerConfig = pickerConfig
+        
+        viewDidLoad()
     }
     
     override open func loadView() {
@@ -246,7 +248,7 @@ extension AssetsPhotoViewController {
     }
     
     func setupBarButtonItems() {
-        navigationItem.leftBarButtonItem = cancelButtonItem
+        //navigationItem.leftBarButtonItem = cancelButtonItem
         navigationItem.rightBarButtonItem = doneButtonItem
         doneButtonItem.isEnabled = false
     }

@@ -163,7 +163,7 @@ open class AssetsPickerConfig {
                 NSSortDescriptor(key: "creationDate", ascending: true),
                 NSSortDescriptor(key: "modificationDate", ascending: true)
             ]
-            options.predicate = NSPredicate(format: "mediaType = %d OR mediaType = %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+            options.predicate = NSPredicate(format: "mediaType = %d OR mediaType = %d", PHAssetMediaType.image.rawValue)
             assetFetchOptions = [
                 .smartAlbum: options,
                 .album: options,
