@@ -220,7 +220,7 @@ open class AssetsPhotoViewController: UIViewController {
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setupGestureRecognizer()
+        //setupGestureRecognizer()
         if traitCollection.forceTouchCapability == .available {
             previewing = registerForPreviewing(with: self, sourceView: collectionView)
         }
@@ -262,7 +262,7 @@ extension AssetsPhotoViewController {
             guard let `self` = self else { return }
             
             self.updateEmptyView(count: photos.count)
-            self.title = self.title(forAlbum: manager.selectedAlbum)
+            self.title = manager.selectedAlbum?.localizedTitle
             
             if self.selectedArray.count > 0 {
                 self.collectionView.performBatchUpdates({ [weak self] in
@@ -425,7 +425,7 @@ extension AssetsPhotoViewController {
         let imageCount = counts.imageCount
         let videoCount = counts.videoCount
         
-        var titleString: String = title(forAlbum: AssetsManager.shared.selectedAlbum)
+        var titleString: String = AssetsManager.shared.selectedAlbum?.localizedTitle ?? ""
         
         if imageCount > 0 && videoCount > 0 {
             titleString = String(format: String(key: "Title_Selected_Items"), NumberFormatter.decimalString(value: imageCount + videoCount))

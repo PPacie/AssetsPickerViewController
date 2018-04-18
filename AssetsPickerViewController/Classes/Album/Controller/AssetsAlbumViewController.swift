@@ -93,7 +93,8 @@ open class AssetsAlbumViewController: UIViewController {
         setupCommon()
         setupBarButtonItems()
         
-        self.navigationController?.navigationBar.isHidden = true
+        AssetsManager.shared.clear()
+        navigationController?.navigationBar.isHidden = true
         
         AssetsManager.shared.authorize(completion: { [weak self] isAuthorized in
             if isAuthorized {
@@ -137,7 +138,7 @@ extension AssetsAlbumViewController {
     
     func setupBarButtonItems() {
         navigationItem.leftBarButtonItem = cancelButtonItem
-//        navigationItem.rightBarButtonItem = searchButtonItem
+//      navigationItem.rightBarButtonItem = searchButtonItem
     }
     
     func updateLayout(layout: UICollectionViewLayout?, isPortrait: Bool) {
@@ -154,9 +155,7 @@ extension AssetsAlbumViewController {
 extension AssetsAlbumViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         logi("[\(indexPath.section)][\(indexPath.row)]")
-//        dismiss(animated: true, completion: {
-//            AssetsManager.shared.unsubscribe(subscriber: self)
-//        })
+        AssetsManager.shared.unsubscribe(subscriber: self)
         delegate?.assetsAlbumViewController(controller: self, selected: AssetsManager.shared.album(at: indexPath))
     }
 }

@@ -86,6 +86,7 @@ open class AssetsPickerViewController: UINavigationController {
         AssetsManager.shared.clear()
         logd("Released \(type(of: self))")
     }
+    
 }
 extension AssetsPickerViewController: AssetsAlbumViewControllerDelegate {
     
@@ -93,7 +94,11 @@ extension AssetsPickerViewController: AssetsAlbumViewControllerDelegate {
     
     public func assetsAlbumViewController(controller: AssetsAlbumViewController, selected album: PHAssetCollection) {
         photoViewController.select(album: album)
-        navigationController?.pushViewController(photoViewController, animated: true)
+        if let nv = navigationController {
+            nv.pushViewController(photoViewController, animated: true)
+        } else {
+            pushViewController(photoViewController, animated: true)
+        }
     }
     
 }
