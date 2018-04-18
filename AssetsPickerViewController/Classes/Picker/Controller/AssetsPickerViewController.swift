@@ -100,5 +100,4 @@ extension AssetsPickerViewController: AssetsAlbumViewControllerDelegate {
             pushViewController(photoViewController, animated: true)
         }
     }
-    
 }
