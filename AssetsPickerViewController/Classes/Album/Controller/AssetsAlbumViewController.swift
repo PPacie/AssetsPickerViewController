@@ -154,9 +154,9 @@ extension AssetsAlbumViewController {
 extension AssetsAlbumViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         logi("[\(indexPath.section)][\(indexPath.row)]")
-        dismiss(animated: true, completion: {
-            AssetsManager.shared.unsubscribe(subscriber: self)
-        })
+//        dismiss(animated: true, completion: {
+//            AssetsManager.shared.unsubscribe(subscriber: self)
+//        })
         delegate?.assetsAlbumViewController(controller: self, selected: AssetsManager.shared.album(at: indexPath))
     }
 }

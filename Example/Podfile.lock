@@ -21,9 +21,19 @@ PODS:
 DEPENDENCIES:
   - AssetsPickerViewController (from `../`)
 
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Device
+    - Dimmer
+    - FadeView
+    - PureLayout
+    - SwiftARGB
+    - TinyLog
+    - UIViewKVO
+
 EXTERNAL SOURCES:
   AssetsPickerViewController:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
   AssetsPickerViewController: 0e53337333e5cae342ce22467fbb36d8e0d411d7
@@ -37,4 +47,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 7fd02be6c6728ec4eb6910019f6cf194e5ea58cd
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0
