@@ -10,6 +10,7 @@ import UIKit
 import Photos
 import Dimmer
 import PureLayout
+import SDWebImage
 
 public protocol ThirdPartiesPhotoCellProtocol {
     func configure(item: PhotoViewModel)
@@ -26,7 +27,7 @@ open class PhotoCell: UICollectionViewCell, ThirdPartiesPhotoCellProtocol {
     public func configure(item: PhotoViewModel) {
         cellID = item.imageID
         //Configure ImageView Image
-        downloadImage(url: item.url)
+        imageView.sd_setImage(with: item.url)
     }
     
     open override var isSelected: Bool {
@@ -90,20 +91,5 @@ open class PhotoCell: UICollectionViewCell, ThirdPartiesPhotoCellProtocol {
     open override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
-    }
-    
-    private func getDataFromUrl(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            completion(data, response, error)
-            }.resume()
-    }
-    
-    private func downloadImage(url: URL) {
-        getDataFromUrl(url: url) { data, response, error in
-            guard let data = data, error == nil else { return }
-            DispatchQueue.main.async() {
-                self.imageView.image = UIImage(data: data)
-            }
-        }
     }
 }
