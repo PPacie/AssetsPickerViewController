@@ -32,23 +32,17 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     fileprivate let cellReuseIdentifier: String = UUID().uuidString
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
     
-//    fileprivate var requestIdMap = [IndexPath: PHImageRequestID]()
-    
-//    fileprivate lazy var cancelButtonItem: UIBarButtonItem = {
-//        let buttonItem = UIBarButtonItem(title: String(key: "Cancel"), style: .plain, target: self, action: #selector(pressedCancel(button:)))
-//        return buttonItem
-//    }()
+    fileprivate var previewing: UIViewControllerPreviewing?
+
     fileprivate lazy var doneButtonItem: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: String(key: "Done"), style: .plain, target: self, action: #selector(pressedDone(button:)))
         return buttonItem
     }()
-    fileprivate let emptyView: AssetsEmptyView = {
-        return AssetsEmptyView.newAutoLayout()
-    }()
-    fileprivate let noPermissionView: AssetsNoPermissionView = {
-        return AssetsNoPermissionView.newAutoLayout()
-    }()
-        
+    
+//    fileprivate let emptyView: AssetsEmptyView = {
+//        return AssetsEmptyView.newAutoLayout()
+//    }()
+    
     fileprivate var tapGesture: UITapGestureRecognizer?
     fileprivate var syncOffsetRatio: CGFloat = -1
     
@@ -77,6 +71,8 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         view.register(AssetsPhotoFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: self.footerReuseIdentifier)
         view.contentInset = UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor.clear
+        view.dataSource = self
+        view.delegate = self
         view.remembersLastFocusedIndexPath = true
         if #available(iOS 10.0, *) {
             //view.prefetchDataSource = self
@@ -91,31 +87,36 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         return selectedArray
     }
     
-    var assets: [PhotoViewModel] = [] {
-        didSet { collectionView.reloadData() }
+    public var assets: [PhotoViewModel] = [] {
+        didSet {
+            collectionView.reloadData()
+            updateFooter()
+        }
     }
     
     // MARK: Lifecycle Methods
-//    required public init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//    }
-//
-//    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-//    }
-//
-//    convenience init() {
-//        self.init()        
-//        viewDidLoad()
-//    }
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    public init(assets: [PhotoViewModel]) {
+        self.init()
+        self.assets = assets
+    
+        //viewDidLoad()
+    }
     
     override open func loadView() {
         super.loadView()
         view = UIView()
         view.backgroundColor = .white
         view.addSubview(collectionView)
-        view.addSubview(emptyView)
-        view.addSubview(noPermissionView)
+        //view.addSubview(emptyView)
+        //view.addSubview(noPermissionView)
         view.setNeedsUpdateConstraints()
     }
     
@@ -124,23 +125,8 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         
         setupCommon()
         setupBarButtonItems()
-        
-        updateEmptyView(count: 0)
-        updateNoPermissionView()
-        
-//        if let selectedAssets = self.pickerConfig?.selectedAssets {
-//            setSelectedAssets(assets: selectedAssets)
-//        }
-        
-//        AssetsManager.shared.authorize { [weak self] (isGranted) in
-//            guard let `self` = self else { return }
-//            self.updateNoPermissionView()
-//            if isGranted {
-//                self.setupAssets()
-//            } else {
-//                self.delegate?.assetsPickerCannotAccessPhotoLibrary?(controller: self.picker)
-//            }
-//        }
+        updateFooter()
+        //updateEmptyView(count: assets.count)
     }
     
 //    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -184,8 +170,8 @@ open class ThirdPartiesPhotoViewController: UIViewController {
             }
             collectionView.autoPinEdge(toSuperviewEdge: .bottom)
             
-            emptyView.autoPinEdgesToSuperviewEdges()
-            noPermissionView.autoPinEdgesToSuperviewEdges()
+//            emptyView.autoPinEdgesToSuperviewEdges()
+
             didSetupConstraints = true
         }
         super.updateViewConstraints()
@@ -222,22 +208,22 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         updateNavigationStatus()
     }
     
-    override open func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
+//    override open func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//
 //        if traitCollection.forceTouchCapability == .available {
 //            previewing = registerForPreviewing(with: self, sourceView: collectionView)
 //        }
-    }
-    
-    override open func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
+//    }
+//
+//    override open func viewDidDisappear(_ animated: Bool) {
+//        super.viewDidDisappear(animated)
+//
 //        if let previewing = self.previewing {
 //            self.previewing = nil
 //            unregisterForPreviewing(withContext: previewing)
 //        }
-    }
+//    }
     
     deinit {
         logd("Released \(type(of: self))")
@@ -255,57 +241,23 @@ extension ThirdPartiesPhotoViewController {
         navigationItem.rightBarButtonItem = doneButtonItem
         doneButtonItem.isEnabled = false
     }
-    
-    func setupAssets() {
-        let manager = AssetsManager.shared
-        //manager.subscribe(subscriber: self)
-        manager.fetchAlbums()
-        manager.fetchAssets() { [weak self] photos in
-            
-            guard let `self` = self else { return }
-            
-            self.updateEmptyView(count: photos.count)
-            self.title = manager.selectedAlbum?.localizedTitle
-            
-//            if self.selectedArray.count > 0 {
-//                self.collectionView.performBatchUpdates({ [weak self] in
-//                    self?.collectionView.reloadData()
-//                    }, completion: { [weak self] (finished) in
-//                        guard let `self` = self else { return }
-//                        // initialize preselected assets
-//                        self.selectedArray.forEach({ [weak self] (asset) in
-//                            if let row = photos.index(of: asset) {
-//                                let indexPathToSelect = IndexPath(row: row, section: 0)
-//                                self?.collectionView.selectItem(at: indexPathToSelect, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue: 0))
-//                            }
-//                        })
-//                        self.updateSelectionCount()
-//                })
-//            }
-        }
-    }
 }
 
 // MARK: - Internal APIs for UI
 extension ThirdPartiesPhotoViewController {
     
-    func updateEmptyView(count: Int) {
-        if emptyView.isHidden {
-            if count == 0 {
-                emptyView.isHidden = false
-            }
-        } else {
-            if count > 0 {
-                emptyView.isHidden = true
-            }
-        }
-        logi("emptyView.isHidden: \(emptyView.isHidden), count: \(count)")
-    }
-    
-    func updateNoPermissionView() {
-        noPermissionView.isHidden = PHPhotoLibrary.authorizationStatus() == .authorized
-        logi("isHidden: \(noPermissionView.isHidden)")
-    }
+//    func updateEmptyView(count: Int) {
+//        if emptyView.isHidden {
+//            if count == 0 {
+//                emptyView.isHidden = false
+//            }
+//        } else {
+//            if count > 0 {
+//                emptyView.isHidden = true
+//            }
+//        }
+//        logi("emptyView.isHidden: \(emptyView.isHidden), count: \(count)")
+//    }
     
     func updateLayout(layout: UICollectionViewLayout, isPortrait: Bool? = nil) {
         guard let photoLayout = layout as? AssetsPhotoLayout else { return }
@@ -316,19 +268,7 @@ extension ThirdPartiesPhotoViewController {
         photoLayout.minimumLineSpacing = self.isPortrait ? photoLayout.assetPortraitLineSpace : photoLayout.assetLandscapeLineSpace
         photoLayout.minimumInteritemSpacing = self.isPortrait ? photoLayout.assetPortraitInteritemSpace : photoLayout.assetLandscapeInteritemSpace
     }
-    
-    func setSelectedAssets(assets: [PhotoViewModel]) {
-//        selectedArray.removeAll()
-//        selectedMap.removeAll()
-//
-//        _ = assets.filter { AssetsManager.shared.isExist(asset: $0) }
-//            .map { [weak self] asset in
-//                guard let `self` = self else { return }
-//                self.selectedArray.append(asset)
-//                self.selectedMap.updateValue(asset, forKey: asset.localIdentifier)
-//        }
-    }
-    
+
     func select(asset: PhotoViewModel, at indexPath: IndexPath) {
         if let _ = selectedMap[asset.imageID] {
             logw("Invalid status.")
@@ -401,7 +341,7 @@ extension ThirdPartiesPhotoViewController {
         guard let footerView = collectionView.visibleSupplementaryViews(ofKind: UICollectionElementKindSectionFooter).last as? AssetsPhotoFooterView else {
             return
         }
-        footerView.set(imageCount: AssetsManager.shared.count(ofType: .image), videoCount: AssetsManager.shared.count(ofType: .video))
+        footerView.set(imageCount: assets.count, videoCount: 0)
     }
     
     func title(forAlbum album: PHAssetCollection?) -> String {
@@ -476,9 +416,9 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegate {
 extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let count = AssetsManager.shared.assetArray.count
-        updateEmptyView(count: count)
-        return count
+        //let count = AssetsManager.shared.assetArray.count
+        //updateEmptyView(count: count)
+        return assets.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -504,28 +444,6 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
         }
         
         photoCell.configure(item: asset)
-        //cancelFetching(at: indexPath)
-//        let requestId = AssetsManager.shared.image(at: indexPath.row, size: pickerConfig.assetCacheSize, completion: { [weak self] (image, isDegraded) in
-//            if self?.isFetching(indexPath: indexPath) ?? true {
-//                if !isDegraded {
-//                    self?.removeFetching(indexPath: indexPath)
-//                }
-//                UIView.transition(
-//                    with: photoCell.imageView,
-//                    duration: 0.125,
-//                    options: .transitionCrossDissolve,
-//                    animations: {
-//                        photoCell.imageView.image = image
-//                },
-//                    completion: nil
-//                )
-//            }
-//        })
-        //registerFetching(requestId: requestId, at: indexPath)
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        //cancelFetching(at: indexPath)
     }
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -535,39 +453,10 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
         }
         footerView.setNeedsUpdateConstraints()
         footerView.updateConstraintsIfNeeded()
-        footerView.set(imageCount: AssetsManager.shared.count(ofType: .image), videoCount: AssetsManager.shared.count(ofType: .video))
+        footerView.set(imageCount: assets.count, videoCount: 0)
         return footerView
     }
 }
-
-// MARK: - Image Fetch Utility
-//extension ThirdPartiesPhotoViewController {
-//
-//    func cancelFetching(at indexPath: IndexPath) {
-//        if let requestId = requestIdMap[indexPath] {
-//            requestIdMap.removeValue(forKey: indexPath)
-//            AssetsManager.shared.cancelRequest(requestId: requestId)
-//        }
-//    }
-//
-//    func registerFetching(requestId: PHImageRequestID, at indexPath: IndexPath) {
-//        requestIdMap[indexPath] = requestId
-//    }
-//
-//    func removeFetching(indexPath: IndexPath) {
-//        if let _ = requestIdMap[indexPath] {
-//            requestIdMap.removeValue(forKey: indexPath)
-//        }
-//    }
-//
-//    func isFetching(indexPath: IndexPath) -> Bool {
-//        if let _ = requestIdMap[indexPath] {
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
-//}
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ThirdPartiesPhotoViewController: UICollectionViewDelegateFlowLayout {
@@ -587,90 +476,6 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegateFlowLayout {
         }
     }
 }
-
-// MARK: - UICollectionViewDataSourcePrefetching
-//extension ThirdPartiesPhotoViewController: UICollectionViewDataSourcePrefetching {
-//    public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-//        var assets = [PHAsset]()
-//        for indexPath in indexPaths {
-//            assets.append(AssetsManager.shared.assetArray[indexPath.row])
-//        }
-//        AssetsManager.shared.cache(assets: assets, size: pickerConfig.assetCacheSize)
-//    }
-//}
-
-// MARK: - AssetsAlbumViewControllerDelegate
-//extension ThirdPartiesPhotoViewController: AssetsAlbumViewControllerDelegate {
-//
-//    public func assetsAlbumViewControllerCancelled(controller: AssetsAlbumViewController) {
-//        logi("Cancelled.")
-//    }
-//
-//    public func assetsAlbumViewController(controller: AssetsAlbumViewController, selected album: PHAssetCollection) {
-//        select(album: album)
-//    }
-//}
-
-//// MARK: - AssetsManagerDelegate
-//extension ThirdPartiesPhotoViewController: AssetsManagerDelegate {
-//
-//    public func assetsManager(manager: AssetsManager, authorizationStatusChanged oldStatus: PHAuthorizationStatus, newStatus: PHAuthorizationStatus) {
-//        if oldStatus != .authorized {
-//            if newStatus == .authorized {
-//                updateNoPermissionView()
-//                AssetsManager.shared.fetchAssets(isRefetch: true, completion: { [weak self] (_) in
-//                    self?.collectionView.reloadData()
-//                })
-//            }
-//        } else {
-//            updateNoPermissionView()
-//        }
-//    }
-//
-//    public func assetsManager(manager: AssetsManager, reloadedAlbumsInSection section: Int) {}
-//    public func assetsManager(manager: AssetsManager, insertedAlbums albums: [PHAssetCollection], at indexPaths: [IndexPath]) {}
-//
-//    public func assetsManager(manager: AssetsManager, removedAlbums albums: [PHAssetCollection], at indexPaths: [IndexPath]) {
-//        logi("removedAlbums at indexPaths: \(indexPaths)")
-//        guard let selectedAlbum = manager.selectedAlbum else {
-//            logw("selected album is nil.")
-//            return
-//        }
-//        if albums.contains(selectedAlbum) {
-//            select(album: manager.defaultAlbum ?? manager.cameraRollAlbum)
-//        }
-//    }
-//
-//    public func assetsManager(manager: AssetsManager, updatedAlbums albums: [PHAssetCollection], at indexPaths: [IndexPath]) {}
-//    public func assetsManager(manager: AssetsManager, reloadedAlbum album: PHAssetCollection, at indexPath: IndexPath) {}
-//
-//    public func assetsManager(manager: AssetsManager, insertedAssets assets: [PHAsset], at indexPaths: [IndexPath]) {
-//        logi("insertedAssets at: \(indexPaths)")
-//        collectionView.insertItems(at: indexPaths)
-//        updateFooter()
-//    }
-//
-//    public func assetsManager(manager: AssetsManager, removedAssets assets: [PHAsset], at indexPaths: [IndexPath]) {
-//        logi("removedAssets at: \(indexPaths)")
-//        for removedAsset in assets {
-//            if let index = selectedArray.index(of: removedAsset) {
-//                selectedArray.remove(at: index)
-//                selectedMap.removeValue(forKey: removedAsset.localIdentifier)
-//            }
-//        }
-//        collectionView.deleteItems(at: indexPaths)
-//        updateSelectionCount()
-//        updateNavigationStatus()
-//        updateFooter()
-//    }
-//
-//    public func assetsManager(manager: AssetsManager, updatedAssets assets: [PHAsset], at indexPaths: [IndexPath]) {
-//        logi("updatedAssets at: \(indexPaths)")
-//        collectionView.reloadItems(at: indexPaths)
-//        updateNavigationStatus()
-//        updateFooter()
-//    }
-//}
 
 // MARK - UIViewControllerPreviewingDelegate
 //@available(iOS 9.0, *)
