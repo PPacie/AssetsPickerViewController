@@ -18,6 +18,7 @@ import Device
     func assetsPicker(selected assets: [PhotoViewModel])
     @objc optional func assetsPicker(selectedAssets: Int, shouldSelect asset: PhotoViewModel, at indexPath: IndexPath) -> Bool
     @objc optional func assetsPicker(didSelect asset: PhotoViewModel, at indexPath: IndexPath)
+    @objc optional func scrollViewDidScroll(_ scrollView: UIScrollView)
 //    @objc optional func assetsPicker(shouldDeselect asset: PhotoViewModel, at indexPath: IndexPath) -> Bool
 //    @objc optional func assetsPicker(didDeselect asset: PhotoViewModel, at indexPath: IndexPath)
 //    @objc optional func assetsPicker(controller: ThirdPartiesPhotoViewController, didDismissByCancelling byCancel: Bool)
@@ -455,6 +456,13 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
         footerView.updateConstraintsIfNeeded()
         footerView.set(imageCount: assets.count, videoCount: 0)
         return footerView
+    }
+}
+
+extension ThirdPartiesPhotoViewController: UIScrollViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        logi("contentOffset: \(scrollView.contentOffset)")
+        delegate?.scrollViewDidScroll?(scrollView)
     }
 }
 
