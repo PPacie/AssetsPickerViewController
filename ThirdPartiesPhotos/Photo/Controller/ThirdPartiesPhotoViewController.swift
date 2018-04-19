@@ -68,7 +68,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     
     fileprivate lazy var collectionView: UICollectionView = {
         
-        let layout = AssetsPhotoLayout(pickerConfig: self.pickerConfig)
+        let layout = AssetsPhotoLayout()
         self.updateLayout(layout: layout, isPortrait: UIApplication.shared.statusBarOrientation.isPortrait)
         layout.scrollDirection = .vertical
         
@@ -208,7 +208,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         let isPortrait = size.height > size.width
         let contentSize = CGSize(width: size.width, height: size.height)
         if let photoLayout = collectionView.collectionViewLayout as? AssetsPhotoLayout {
-            if let offset = photoLayout.translateOffset(forChangingSize: contentSize, currentOffset: collectionView.contentOffset) {
+            if let offset = photoLayout.translateOffset(forChangingSize: contentSize, currentOffset: collectionView.contentOffset, itemsCount: assets.count) {
                 photoLayout.translatedOffset = offset
                 logi("translated offset: \(offset)")
             }

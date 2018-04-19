@@ -13,16 +13,6 @@ import TinyLog
 open class AssetsPhotoLayout: UICollectionViewFlowLayout {
     
     open var translatedOffset: CGPoint?
-    fileprivate var pickerConfig: AssetsPickerConfig
-    
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public init(pickerConfig: AssetsPickerConfig) {
-        self.pickerConfig = pickerConfig
-        super.init()
-    }
     
     open override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
         return targetContentOffset(forProposedContentOffset: proposedContentOffset)
@@ -35,17 +25,37 @@ open class AssetsPhotoLayout: UICollectionViewFlowLayout {
             return proposedContentOffset
         }
     }
+    
+    open var assetPortraitColumnCount: Int = UI_USER_INTERFACE_IDIOM() == .pad ? 5 : 4
+    open var assetPortraitInteritemSpace: CGFloat = 1
+    open var assetPortraitLineSpace: CGFloat = 1
+    
+    func assetPortraitCellSize(forViewSize size: CGSize) -> CGSize {
+        let count = CGFloat(assetPortraitColumnCount)
+        let edge = (size.width - (count - 1) * assetPortraitInteritemSpace) / count
+        return CGSize(width: edge, height: edge)
+    }
+    
+    open var assetLandscapeColumnCount: Int = 7
+    open var assetLandscapeInteritemSpace: CGFloat = 1.5
+    open var assetLandscapeLineSpace: CGFloat = 1.5
+    
+    func assetLandscapeCellSize(forViewSize size: CGSize) -> CGSize {
+        let count = CGFloat(assetLandscapeColumnCount)
+        let edge = (size.width - (count - 1) * assetLandscapeInteritemSpace) / count
+        return CGSize(width: edge, height: edge)
+    }
 }
 
 extension AssetsPhotoLayout {
     
-    open func expectedContentHeight(forViewSize size: CGSize, isPortrait: Bool) -> CGFloat {
-        var rows = AssetsManager.shared.assetArray.count / (isPortrait ? pickerConfig.assetPortraitColumnCount : pickerConfig.assetLandscapeColumnCount)
-        let remainder = AssetsManager.shared.assetArray.count % (isPortrait ? pickerConfig.assetPortraitColumnCount : pickerConfig.assetLandscapeColumnCount)
+    open func expectedContentHeight(forViewSize size: CGSize, isPortrait: Bool, itemsCount: Int) -> CGFloat {
+        var rows = itemsCount / (isPortrait ? assetPortraitColumnCount : assetLandscapeColumnCount)
+        let remainder = itemsCount % (isPortrait ? assetPortraitColumnCount : assetLandscapeColumnCount)
         rows += remainder > 0 ? 1 : 0
         
-        let cellSize = isPortrait ? pickerConfig.assetPortraitCellSize(forViewSize: UIScreen.main.portraitContentSize) : pickerConfig.assetLandscapeCellSize(forViewSize: UIScreen.main.landscapeContentSize)
-        let lineSpace = isPortrait ? pickerConfig.assetPortraitLineSpace : pickerConfig.assetLandscapeLineSpace
+        let cellSize = isPortrait ? assetPortraitCellSize(forViewSize: UIScreen.main.portraitContentSize) : assetLandscapeCellSize(forViewSize: UIScreen.main.landscapeContentSize)
+        let lineSpace = isPortrait ? assetPortraitLineSpace : assetLandscapeLineSpace
         let contentHeight = CGFloat(rows) * cellSize.height + (CGFloat(max(rows - 1, 0)) * lineSpace)
         let bottomHeight = cellSize.height * 2/3 + Device.safeAreaInsets(isPortrait: isPortrait).bottom
         
@@ -56,13 +66,13 @@ extension AssetsPhotoLayout {
         return (offset.y > 0 ? offset.y : 0) / ((contentSize.height + Device.safeAreaInsets(isPortrait: isPortrait).bottom) - collectionView.bounds.height)
     }
     
-    open func translateOffset(forChangingSize size: CGSize, currentOffset: CGPoint) -> CGPoint? {
+    open func translateOffset(forChangingSize size: CGSize, currentOffset: CGPoint, itemsCount: Int) -> CGPoint? {
         guard let collectionView = self.collectionView else {
             return nil
         }
         let isPortraitFuture = size.height > size.width
         let isPortraitCurrent = collectionView.bounds.size.height > collectionView.bounds.size.width
-        let contentHeight = expectedContentHeight(forViewSize: size, isPortrait: isPortraitFuture)
+        let contentHeight = expectedContentHeight(forViewSize: size, isPortrait: isPortraitFuture, itemsCount: itemsCount)
         let currentRatio = offsetRatio(collectionView: collectionView, offset: currentOffset, contentSize: collectionView.contentSize, isPortrait: isPortraitCurrent)
         logi("currentRatio = \(currentRatio)")
         var futureOffsetY = (contentHeight - size.height) * currentRatio
