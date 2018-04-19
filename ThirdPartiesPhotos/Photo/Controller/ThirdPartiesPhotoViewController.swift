@@ -29,9 +29,6 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     @objc open weak var delegate: ThirdPartiesPhotoViewControllerDelegate?
     
     // MARK: Properties
-    fileprivate var pickerConfig: AssetsPickerConfig!
-    //fileprivate var previewing: UIViewControllerPreviewing?
-    
     fileprivate let cellReuseIdentifier: String = UUID().uuidString
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
     
@@ -82,7 +79,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         view.backgroundColor = UIColor.clear
         view.remembersLastFocusedIndexPath = true
         if #available(iOS 10.0, *) {
-            view.prefetchDataSource = self
+            //view.prefetchDataSource = self
         }
         view.showsHorizontalScrollIndicator = false
         view.showsVerticalScrollIndicator = true
@@ -94,23 +91,23 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         return selectedArray
     }
     
-    var assets: [PhotoViewModel] = []
+    var assets: [PhotoViewModel] = [] {
+        didSet { collectionView.reloadData() }
+    }
     
     // MARK: Lifecycle Methods
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    init(pickerConfig: AssetsPickerConfig) {
-        self.init()
-        self.pickerConfig = pickerConfig
-        
-        viewDidLoad()
-    }
+//    required public init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//    }
+//
+//    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//    }
+//
+//    convenience init() {
+//        self.init()        
+//        viewDidLoad()
+//    }
     
     override open func loadView() {
         super.loadView()
@@ -311,13 +308,13 @@ extension ThirdPartiesPhotoViewController {
     }
     
     func updateLayout(layout: UICollectionViewLayout, isPortrait: Bool? = nil) {
-        guard let flowLayout = layout as? UICollectionViewFlowLayout else { return }
+        guard let photoLayout = layout as? AssetsPhotoLayout else { return }
         if let isPortrait = isPortrait {
             self.isPortrait = isPortrait
         }
-        flowLayout.itemSize = self.isPortrait ? pickerConfig.assetPortraitCellSize(forViewSize: UIScreen.main.portraitContentSize) : pickerConfig.assetLandscapeCellSize(forViewSize: UIScreen.main.landscapeContentSize)
-        flowLayout.minimumLineSpacing = self.isPortrait ? pickerConfig.assetPortraitLineSpace : pickerConfig.assetLandscapeLineSpace
-        flowLayout.minimumInteritemSpacing = self.isPortrait ? pickerConfig.assetPortraitInteritemSpace : pickerConfig.assetLandscapeInteritemSpace
+        photoLayout.itemSize = self.isPortrait ? photoLayout.assetPortraitCellSize(forViewSize: UIScreen.main.portraitContentSize) : photoLayout.assetLandscapeCellSize(forViewSize: UIScreen.main.landscapeContentSize)
+        photoLayout.minimumLineSpacing = self.isPortrait ? photoLayout.assetPortraitLineSpace : photoLayout.assetLandscapeLineSpace
+        photoLayout.minimumInteritemSpacing = self.isPortrait ? photoLayout.assetPortraitInteritemSpace : photoLayout.assetLandscapeInteritemSpace
     }
     
     func setSelectedAssets(assets: [PhotoViewModel]) {
@@ -380,7 +377,7 @@ extension ThirdPartiesPhotoViewController {
     
     func updateNavigationStatus() {
         
-        doneButtonItem.isEnabled = selectedArray.count >= (pickerConfig.assetsMinimumSelectionCount > 0 ? pickerConfig.assetsMinimumSelectionCount : 1)
+        doneButtonItem.isEnabled = selectedArray.count >= 1
         
         let imageCount = selectedArray.count
         
@@ -576,11 +573,14 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
 extension ThirdPartiesPhotoViewController: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        guard let photoLayout = collectionViewLayout as? AssetsPhotoLayout else { return .zero }
+        
         if collectionView.numberOfSections - 1 == section {
             if collectionView.bounds.width > collectionView.bounds.height {
-                return CGSize(width: collectionView.bounds.width, height: pickerConfig.assetLandscapeCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
+                return CGSize(width: collectionView.bounds.width, height:
+                    photoLayout.assetLandscapeCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
             } else {
-                return CGSize(width: collectionView.bounds.width, height: pickerConfig.assetPortraitCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
+                return CGSize(width: collectionView.bounds.width, height: photoLayout.assetPortraitCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
             }
         } else {
             return .zero
@@ -589,15 +589,15 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - UICollectionViewDataSourcePrefetching
-extension ThirdPartiesPhotoViewController: UICollectionViewDataSourcePrefetching {
-    public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        var assets = [PHAsset]()
-        for indexPath in indexPaths {
-            assets.append(AssetsManager.shared.assetArray[indexPath.row])
-        }
-        AssetsManager.shared.cache(assets: assets, size: pickerConfig.assetCacheSize)
-    }
-}
+//extension ThirdPartiesPhotoViewController: UICollectionViewDataSourcePrefetching {
+//    public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+//        var assets = [PHAsset]()
+//        for indexPath in indexPaths {
+//            assets.append(AssetsManager.shared.assetArray[indexPath.row])
+//        }
+//        AssetsManager.shared.cache(assets: assets, size: pickerConfig.assetCacheSize)
+//    }
+//}
 
 // MARK: - AssetsAlbumViewControllerDelegate
 //extension ThirdPartiesPhotoViewController: AssetsAlbumViewControllerDelegate {

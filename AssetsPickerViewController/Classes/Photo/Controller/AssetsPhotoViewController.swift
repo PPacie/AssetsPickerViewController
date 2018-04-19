@@ -323,13 +323,13 @@ extension AssetsPhotoViewController {
     }
     
     func updateLayout(layout: UICollectionViewLayout, isPortrait: Bool? = nil) {
-        guard let flowLayout = layout as? UICollectionViewFlowLayout else { return }
+        guard let photoLayout = layout as? AssetsPhotoLayout else { return }
         if let isPortrait = isPortrait {
             self.isPortrait = isPortrait
         }
-        flowLayout.itemSize = self.isPortrait ? pickerConfig.assetPortraitCellSize(forViewSize: UIScreen.main.portraitContentSize) : pickerConfig.assetLandscapeCellSize(forViewSize: UIScreen.main.landscapeContentSize)
-        flowLayout.minimumLineSpacing = self.isPortrait ? pickerConfig.assetPortraitLineSpace : pickerConfig.assetLandscapeLineSpace
-        flowLayout.minimumInteritemSpacing = self.isPortrait ? pickerConfig.assetPortraitInteritemSpace : pickerConfig.assetLandscapeInteritemSpace
+        photoLayout.itemSize = self.isPortrait ? photoLayout.assetPortraitCellSize(forViewSize: UIScreen.main.portraitContentSize) : photoLayout.assetLandscapeCellSize(forViewSize: UIScreen.main.landscapeContentSize)
+        photoLayout.minimumLineSpacing = self.isPortrait ? photoLayout.assetPortraitLineSpace : photoLayout.assetLandscapeLineSpace
+        photoLayout.minimumInteritemSpacing = self.isPortrait ? photoLayout.assetPortraitInteritemSpace : photoLayout.assetLandscapeInteritemSpace
     }
     
     func setSelectedAssets(assets: [PHAsset]) {
@@ -661,11 +661,12 @@ extension AssetsPhotoViewController {
 extension AssetsPhotoViewController: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        guard let photoLayout = collectionViewLayout as? AssetsPhotoLayout else { return .zero }
         if collectionView.numberOfSections - 1 == section {
             if collectionView.bounds.width > collectionView.bounds.height {
-                return CGSize(width: collectionView.bounds.width, height: pickerConfig.assetLandscapeCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
+                return CGSize(width: collectionView.bounds.width, height: photoLayout.assetLandscapeCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
             } else {
-                return CGSize(width: collectionView.bounds.width, height: pickerConfig.assetPortraitCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
+                return CGSize(width: collectionView.bounds.width, height: photoLayout.assetPortraitCellSize(forViewSize: collectionView.bounds.size).width * 2/3)
             }
         } else {
             return .zero
