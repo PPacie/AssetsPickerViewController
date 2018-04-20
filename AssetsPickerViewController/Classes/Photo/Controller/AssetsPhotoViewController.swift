@@ -28,13 +28,13 @@ open class AssetsPhotoViewController: UIViewController {
         let buttonItem = UIBarButtonItem(title: String(key: "Cancel"), style: .plain, target: self, action: #selector(pressedCancel(button:)))
         return buttonItem
     }()
-    fileprivate lazy var doneButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: String(key: "Done"), style: .plain, target: self, action: #selector(pressedDone(button:)))
-        return buttonItem
-    }()
+    
+    fileprivate let confirmButton = ConfirmButtonView(title: "next")
+    
     fileprivate let emptyView: AssetsEmptyView = {
         return AssetsEmptyView.newAutoLayout()
     }()
+    
     fileprivate let noPermissionView: AssetsNoPermissionView = {
         return AssetsNoPermissionView.newAutoLayout()
     }()
@@ -109,6 +109,7 @@ open class AssetsPhotoViewController: UIViewController {
         view.addSubview(collectionView)
         view.addSubview(emptyView)
         view.addSubview(noPermissionView)
+        view.addSubview(confirmButton)
         view.setNeedsUpdateConstraints()
     }
     
@@ -116,7 +117,7 @@ open class AssetsPhotoViewController: UIViewController {
         super.viewDidLoad()
         
         setupCommon()
-        setupBarButtonItems()
+        setupButtonItems()
         
         updateEmptyView(count: 0)
         updateNoPermissionView()
@@ -178,7 +179,11 @@ open class AssetsPhotoViewController: UIViewController {
             collectionView.autoPinEdge(toSuperviewEdge: .bottom)
             
             emptyView.autoPinEdgesToSuperviewEdges()
-            noPermissionView.autoPinEdgesToSuperviewEdges()
+            noPermissionView.autoPinEdgesToSuperviewEdges()            
+            confirmButton.autoAlignAxis(.vertical, toSameAxisOf: view)
+            confirmButton.autoPinEdge(toSuperviewMargin: .bottom)
+            confirmButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+            confirmButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
             didSetupConstraints = true
         }
         super.updateViewConstraints()
@@ -244,10 +249,13 @@ extension AssetsPhotoViewController {
         view.backgroundColor = .white
     }
     
-    func setupBarButtonItems() {
-        //navigationItem.leftBarButtonItem = cancelButtonItem
-        navigationItem.rightBarButtonItem = doneButtonItem
-        doneButtonItem.isEnabled = false
+    func setupButtonItems() {
+        confirmButton.buttonPressedHandler = { [weak self] in
+            guard let weakSelf = self else { return }
+            weakSelf.navigationController?.dismiss(animated: true)
+            weakSelf.delegate?.assetsPicker(controller: weakSelf.picker, selected: weakSelf.selectedArray)
+        }
+        confirmButton.isHidden = true
     }
     
     func setupAssets() {
@@ -411,7 +419,7 @@ extension AssetsPhotoViewController {
     
     func updateNavigationStatus() {
         
-        doneButtonItem.isEnabled = selectedArray.count >= (pickerConfig.assetsMinimumSelectionCount > 0 ? pickerConfig.assetsMinimumSelectionCount : 1)
+        confirmButton.isHidden = selectedArray.count == 0 //!(selectedArray.count >= (pickerConfig.assetsMinimumSelectionCount > 0 ? pickerConfig.assetsMinimumSelectionCount : 1))    
         
         let counts: (imageCount: Int, videoCount: Int) = selectedArray.reduce((0, 0)) { (result, asset) -> (Int, Int) in
             let imageCount = asset.mediaType == .image ? 1 : 0

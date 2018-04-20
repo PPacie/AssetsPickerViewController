@@ -33,13 +33,10 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     fileprivate let cellReuseIdentifier: String = UUID().uuidString
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
     
-    fileprivate var previewing: UIViewControllerPreviewing?
-
-    fileprivate lazy var doneButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: String(key: "Done"), style: .plain, target: self, action: #selector(pressedDone(button:)))
-        return buttonItem
-    }()
+    //fileprivate var previewing: UIViewControllerPreviewing?
     
+    fileprivate let confirmButton = ConfirmButtonView(title: "next")
+
 //    fileprivate let emptyView: AssetsEmptyView = {
 //        return AssetsEmptyView.newAutoLayout()
 //    }()
@@ -107,8 +104,6 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     public init(assets: [PhotoViewModel]) {
         self.init()
         self.assets = assets
-    
-        //viewDidLoad()
     }
     
     override open func loadView() {
@@ -116,16 +111,14 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .white
         view.addSubview(collectionView)
-        //view.addSubview(emptyView)
-        //view.addSubview(noPermissionView)
+        view.addSubview(confirmButton)
         view.setNeedsUpdateConstraints()
     }
     
     override open func viewDidLoad() {
         super.viewDidLoad()
         
-        setupCommon()
-        setupBarButtonItems()
+        initialSetup()
         updateFooter()
         //updateEmptyView(count: assets.count)
     }
@@ -171,8 +164,11 @@ open class ThirdPartiesPhotoViewController: UIViewController {
             }
             collectionView.autoPinEdge(toSuperviewEdge: .bottom)
             
-//            emptyView.autoPinEdgesToSuperviewEdges()
-
+            //emptyView.autoPinEdgesToSuperviewEdges()
+            confirmButton.autoAlignAxis(.vertical, toSameAxisOf: view)
+            confirmButton.autoPinEdge(toSuperviewMargin: .bottom)
+            confirmButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+            confirmButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
             didSetupConstraints = true
         }
         super.updateViewConstraints()
@@ -234,13 +230,15 @@ open class ThirdPartiesPhotoViewController: UIViewController {
 // MARK: - Initial Setups
 extension ThirdPartiesPhotoViewController {
     
-    func setupCommon() {
+    func initialSetup() {
         view.backgroundColor = .white
-    }
-    
-    func setupBarButtonItems() {
-        navigationItem.rightBarButtonItem = doneButtonItem
-        doneButtonItem.isEnabled = false
+
+        confirmButton.buttonPressedHandler = { [weak self] in
+            guard let weakSelf = self else { return }
+            weakSelf.dismiss(animated: true)
+            weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
+        }
+        confirmButton.isHidden = true
     }
 }
 
@@ -317,8 +315,7 @@ extension ThirdPartiesPhotoViewController {
     }
     
     func updateNavigationStatus() {
-        
-        doneButtonItem.isEnabled = selectedArray.count >= 1
+        confirmButton.isHidden = selectedArray.count == 0 //!(selectedArray.count >= (pickerConfig.assetsMinimumSelectionCount > 0 ? pickerConfig.assetsMinimumSelectionCount : 1))
         
         let imageCount = selectedArray.count
         
@@ -355,24 +352,6 @@ extension ThirdPartiesPhotoViewController {
         return titleString
     }
 }
-
-// MARK: - UI Event Handlers
-extension ThirdPartiesPhotoViewController {
-    
-//    @objc func pressedCancel(button: UIBarButtonItem) {
-//        navigationController?.dismiss(animated: true, completion: {
-//            self.delegate?.assetsPicker?(controller: self.picker, didDismissByCancelling: true)
-//        })
-//        delegate?.assetsPickerDidCancel?(controller: picker)
-//    }
-    
-    @objc func pressedDone(button: UIBarButtonItem) {
-        navigationController?.dismiss(animated: true)
-        delegate?.assetsPicker(selected: selectedArray)
-    }
-    
-}
-
 // MARK: - UIGestureRecognizerDelegate
 //extension ThirdPartiesPhotoViewController: UIGestureRecognizerDelegate {
 //    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
