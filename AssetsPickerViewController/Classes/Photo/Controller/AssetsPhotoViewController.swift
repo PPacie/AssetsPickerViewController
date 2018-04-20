@@ -39,12 +39,9 @@ open class AssetsPhotoViewController: UIViewController {
         return AssetsNoPermissionView.newAutoLayout()
     }()
     
-    fileprivate var delegate: AssetsPickerViewControllerDelegate? {
-        return (navigationController as? AssetsPickerViewController)?.pickerDelegate
-    }
-    fileprivate var picker: AssetsPickerViewController! {
-        return navigationController as! AssetsPickerViewController
-    }
+    weak var delegate: AssetsPickerViewControllerDelegate?
+    var picker: AssetsPickerViewController!
+    
     fileprivate var tapGesture: UITapGestureRecognizer?
     fileprivate var syncOffsetRatio: CGFloat = -1
     

@@ -94,6 +94,8 @@ extension AssetsPickerViewController: AssetsAlbumViewControllerDelegate {
     
     public func assetsAlbumViewController(controller: AssetsAlbumViewController, selected album: PHAssetCollection) {
         photoViewController.select(album: album)
+        photoViewController.delegate = pickerDelegate
+        photoViewController.picker = self
         if let nv = navigationController {
             nv.pushViewController(photoViewController, animated: true)
         } else {
