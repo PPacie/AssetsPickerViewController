@@ -27,31 +27,16 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     // MARK: Properties
     fileprivate let cellReuseIdentifier: String = UUID().uuidString
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
-    
-    //fileprivate var previewing: UIViewControllerPreviewing?
-    
-    fileprivate let confirmButton = ConfirmButtonView(title: "next")
-
-//    fileprivate let emptyView: AssetsEmptyView = {
-//        return AssetsEmptyView.newAutoLayout()
-//    }()
-    
-    fileprivate var tapGesture: UITapGestureRecognizer?
-    fileprivate var syncOffsetRatio: CGFloat = -1
-    
+    fileprivate let confirmButton = ConfirmButtonView(title:NSLocalizedString("NEXT", comment: ""))
     fileprivate var selectedArray = [PhotoViewModel]()
     fileprivate var selectedMap = [String: PhotoViewModel]()
-    
     fileprivate var didSetupConstraints = false
     fileprivate var didSetInitialPosition: Bool = false
-    
     fileprivate var isPortrait: Bool = true
-    
-    var leadingConstraint: NSLayoutConstraint?
-    var trailingConstraint: NSLayoutConstraint?
+    fileprivate var leadingConstraint: NSLayoutConstraint?
+    fileprivate var trailingConstraint: NSLayoutConstraint?
     
     fileprivate lazy var collectionView: UICollectionView = {
-        
         let layout = AssetsPhotoLayout()
         self.updateLayout(layout: layout, isPortrait: UIApplication.shared.statusBarOrientation.isPortrait)
         layout.scrollDirection = .vertical
@@ -230,7 +215,6 @@ extension ThirdPartiesPhotoViewController {
 
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
-            weakSelf.dismiss(animated: true)
             weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
         }
         confirmButton.isHidden = true

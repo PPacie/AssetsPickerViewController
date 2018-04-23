@@ -252,7 +252,6 @@ extension AssetsPhotoViewController {
     func setupButtonItems() {
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
-            weakSelf.navigationController?.dismiss(animated: true)
             weakSelf.delegate?.assetsPicker(controller: weakSelf.picker, selected: weakSelf.selectedArray)
         }
         confirmButton.isHidden = true
