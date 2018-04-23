@@ -146,7 +146,7 @@ open class AssetsPhotoViewController: UIViewController {
             }
         } else {
             if traitCollection.forceTouchCapability == .available {
-                self.previewing = registerForPreviewing(with: self, sourceView: collectionView)
+                //self.previewing = registerForPreviewing(with: self, sourceView: collectionView)
             }
         }
     }
@@ -224,7 +224,7 @@ open class AssetsPhotoViewController: UIViewController {
         super.viewDidAppear(animated)
         //setupGestureRecognizer()
         if traitCollection.forceTouchCapability == .available {
-            previewing = registerForPreviewing(with: self, sourceView: collectionView)
+            //previewing = registerForPreviewing(with: self, sourceView: collectionView)
         }
     }
     
@@ -764,6 +764,7 @@ extension AssetsPhotoViewController: AssetsManagerDelegate {
 }
 
 // MARK - UIViewControllerPreviewingDelegate
+/* Deactivate Previewing Temporarily
 @available(iOS 9.0, *)
 extension AssetsPhotoViewController: UIViewControllerPreviewingDelegate {
     @available(iOS 9.0, *)
@@ -782,3 +783,4 @@ extension AssetsPhotoViewController: UIViewControllerPreviewingDelegate {
         logi("viewControllerToCommit: \(type(of: viewControllerToCommit))")
     }
 }
+*/

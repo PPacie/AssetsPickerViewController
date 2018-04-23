@@ -13,15 +13,10 @@ import Device
 
 // MARK: - ThirdPartiesPhotoViewControllerDelegate
 @objc public protocol ThirdPartiesPhotoViewControllerDelegate: class {
-    //@objc optional func assetsPickerDidCancel(controller: AssetsPickerViewController)
-    //@objc optional func assetsPickerCannotAccessPhotoLibrary(controller: AssetsPickerViewController)
     func assetsPicker(selected assets: [PhotoViewModel])
     @objc optional func assetsPicker(selectedAssets: Int, shouldSelect asset: PhotoViewModel, at indexPath: IndexPath) -> Bool
     @objc optional func assetsPicker(didSelect asset: PhotoViewModel, at indexPath: IndexPath)
     @objc optional func scrollViewDidScroll(_ scrollView: UIScrollView)
-//    @objc optional func assetsPicker(shouldDeselect asset: PhotoViewModel, at indexPath: IndexPath) -> Bool
-//    @objc optional func assetsPicker(didDeselect asset: PhotoViewModel, at indexPath: IndexPath)
-//    @objc optional func assetsPicker(controller: ThirdPartiesPhotoViewController, didDismissByCancelling byCancel: Bool)
 }
 
 // MARK: - ThirdPartiesPhotoViewController
