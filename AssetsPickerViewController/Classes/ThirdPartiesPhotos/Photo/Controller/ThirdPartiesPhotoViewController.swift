@@ -16,7 +16,6 @@ import Device
     func assetsPicker(selected assets: [PhotoViewModel])
     @objc optional func assetsPicker(selectedAssets: Int, shouldSelect asset: PhotoViewModel, at indexPath: IndexPath) -> Bool
     @objc optional func assetsPicker(didSelect asset: PhotoViewModel, at indexPath: IndexPath)
-    @objc optional func scrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
 // MARK: - ThirdPartiesPhotoViewController
@@ -85,37 +84,18 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         self.init()
         self.assets = assets
     }
-    
-    override open func loadView() {
-        super.loadView()
-        view = UIView()
+
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        
         view.backgroundColor = .white
         view.addSubview(collectionView)
         view.addSubview(confirmButton)
         view.setNeedsUpdateConstraints()
-    }
-    
-    override open func viewDidLoad() {
-        super.viewDidLoad()
         
         initialSetup()
         updateFooter()
-        //updateEmptyView(count: assets.count)
     }
-    
-//    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        super.traitCollectionDidChange(previousTraitCollection)
-//        if let previewing = self.previewing {
-//            if traitCollection.forceTouchCapability != .available {
-//                unregisterForPreviewing(withContext: previewing)
-//                self.previewing = nil
-//            }
-//        } else {
-//            if traitCollection.forceTouchCapability == .available {
-//                self.previewing = registerForPreviewing(with: self, sourceView: collectionView)
-//            }
-//        }
-//    }
     
     override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -185,23 +165,6 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         updateNavigationStatus()
     }
     
-//    override open func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//
-//        if traitCollection.forceTouchCapability == .available {
-//            previewing = registerForPreviewing(with: self, sourceView: collectionView)
-//        }
-//    }
-//
-//    override open func viewDidDisappear(_ animated: Bool) {
-//        super.viewDidDisappear(animated)
-//
-//        if let previewing = self.previewing {
-//            self.previewing = nil
-//            unregisterForPreviewing(withContext: previewing)
-//        }
-//    }
-    
     deinit {
         logd("Released \(type(of: self))")
     }
@@ -223,19 +186,6 @@ extension ThirdPartiesPhotoViewController {
 
 // MARK: - Internal APIs for UI
 extension ThirdPartiesPhotoViewController {
-    
-//    func updateEmptyView(count: Int) {
-//        if emptyView.isHidden {
-//            if count == 0 {
-//                emptyView.isHidden = false
-//            }
-//        } else {
-//            if count > 0 {
-//                emptyView.isHidden = true
-//            }
-//        }
-//        logi("emptyView.isHidden: \(emptyView.isHidden), count: \(count)")
-//    }
     
     func updateLayout(layout: UICollectionViewLayout, isPortrait: Bool? = nil) {
         guard let photoLayout = layout as? AssetsPhotoLayout else { return }
@@ -331,15 +281,6 @@ extension ThirdPartiesPhotoViewController {
         return titleString
     }
 }
-// MARK: - UIGestureRecognizerDelegate
-//extension ThirdPartiesPhotoViewController: UIGestureRecognizerDelegate {
-//    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-//        guard let navigationBar = navigationController?.navigationBar else { return false }
-//        let point = touch.location(in: navigationBar)
-//        // Ignore touches on navigation buttons on both sides.
-//        return point.x > navigationBar.bounds.width / 4 && point.x < navigationBar.bounds.width * 3 / 4
-//    }
-//}
 
 // MARK: - UICollectionViewDelegate
 extension ThirdPartiesPhotoViewController: UICollectionViewDelegate {
@@ -399,6 +340,7 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
             // update cell UI as selected
             if let targetIndex = selectedArray.index(of: selectedAsset) {
                 photoCell.count = targetIndex + 1
+                photoCell.isSelected = true
             }
         }
         
@@ -416,14 +358,6 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
         return footerView
     }
 }
-
-extension ThirdPartiesPhotoViewController: UIScrollViewDelegate {
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        logi("contentOffset: \(scrollView.contentOffset)")
-        delegate?.scrollViewDidScroll?(scrollView)
-    }
-}
-
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ThirdPartiesPhotoViewController: UICollectionViewDelegateFlowLayout {
     
@@ -442,23 +376,3 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegateFlowLayout {
         }
     }
 }
-
-// MARK - UIViewControllerPreviewingDelegate
-//@available(iOS 9.0, *)
-//extension ThirdPartiesPhotoViewController: UIViewControllerPreviewingDelegate {
-//    @available(iOS 9.0, *)
-//    public func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-//        logi("\(location)")
-//        guard let pressingIndexPath = collectionView.indexPathForItem(at: location) else { return nil }
-//        guard let pressingCell = collectionView.cellForItem(at: pressingIndexPath) else { return nil }
-//        previewingContext.sourceRect = pressingCell.frame
-//        let previewController = AssetsPreviewController()
-//        previewController.asset = array[pressingIndexPath.row]
-//        return previewController
-//    }
-//
-//    @available(iOS 9.0, *)
-//    public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-//        logi("viewControllerToCommit: \(type(of: viewControllerToCommit))")
-//    }
-//}

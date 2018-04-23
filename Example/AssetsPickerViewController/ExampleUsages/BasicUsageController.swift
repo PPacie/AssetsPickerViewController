@@ -17,12 +17,14 @@ class BasicUsageController: CommonExampleController {
         
         let photosVC = ThirdPartiesPhotoViewController(assets: loadData())
         photosVC.delegate = self
-        present(photosVC, animated: true)
+        let nc = UINavigationController()
+        nc.viewControllers = [photosVC]
+        present(nc, animated: true)
     }
     
     func loadData() -> [PhotoViewModel] {
         var assets = [PhotoViewModel]()
-        for i in 0...10 {
+        for i in 0...40 {
             let asset = PhotoViewModel(url: URL(string: "https://splashbase.s3.amazonaws.com/unsplash/regular/tumblr_mtax0twHix1st5lhmo1_1280.jpg")!, imageID: String(i))
             assets.append(asset)
         }
@@ -34,6 +36,6 @@ extension BasicUsageController: ThirdPartiesPhotoViewControllerDelegate {
     
     func assetsPicker(selected assets: [PhotoViewModel]) {
         print("Assets Count:", assets.count)
-        //dismiss(animated: true)
+        dismiss(animated: true)
     }
 }
