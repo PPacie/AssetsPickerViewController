@@ -27,7 +27,13 @@ open class PhotoCell: UICollectionViewCell, ThirdPartiesPhotoCellProtocol {
     public func configure(item: PhotoViewModel) {
         cellID = item.imageID
         //Configure ImageView Image
-        imageView.sd_setImage(with: item.url)
+        var url: URL!
+        if let thumbnailURL = item.thumbnail {
+            url = thumbnailURL
+        } else {
+            url = item.url
+        }
+        imageView.sd_setImage(with: url)
     }
     
     open override var isSelected: Bool {
