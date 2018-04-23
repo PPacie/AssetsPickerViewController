@@ -15,7 +15,7 @@ class ConfirmButtonView: UIView {
     
     var buttonPressedHandler: (() -> ())?
     
-    required init(title: String, color: UIColor = .green) {
+    required init(title: String, color: UIColor = UIColor(red: 255/255, green: 112/255, blue: 177/255, alpha: 1)) {
         super.init(frame: .zero)
         
         layer.cornerRadius = height / 2
