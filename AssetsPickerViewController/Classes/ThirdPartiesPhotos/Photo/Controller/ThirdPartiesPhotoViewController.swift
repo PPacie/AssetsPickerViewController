@@ -84,7 +84,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         self.init()
         self.assets = assets
     }
-
+    
     override open func viewDidLoad() {
         super.viewDidLoad()
         
@@ -126,7 +126,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
             
             //emptyView.autoPinEdgesToSuperviewEdges()
             confirmButton.autoAlignAxis(.vertical, toSameAxisOf: view)
-            confirmButton.autoPinEdge(toSuperviewMargin: .bottom)
+            confirmButton.autoPin(toBottomLayoutGuideOf: self, withInset: 10)
             confirmButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
             confirmButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
             didSetupConstraints = true

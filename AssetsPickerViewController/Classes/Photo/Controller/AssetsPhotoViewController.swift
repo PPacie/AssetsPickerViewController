@@ -181,7 +181,7 @@ open class AssetsPhotoViewController: UIViewController {
             emptyView.autoPinEdgesToSuperviewEdges()
             noPermissionView.autoPinEdgesToSuperviewEdges()            
             confirmButton.autoAlignAxis(.vertical, toSameAxisOf: view)
-            confirmButton.autoPinEdge(toSuperviewMargin: .bottom)
+            confirmButton.autoPin(toBottomLayoutGuideOf: self, withInset: 10)
             confirmButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
             confirmButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
             didSetupConstraints = true
