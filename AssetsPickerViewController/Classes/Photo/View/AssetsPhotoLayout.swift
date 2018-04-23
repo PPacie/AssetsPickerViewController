@@ -26,7 +26,7 @@ open class AssetsPhotoLayout: UICollectionViewFlowLayout {
         }
     }
     
-    open var assetPortraitColumnCount: Int = UI_USER_INTERFACE_IDIOM() == .pad ? 5 : 4
+    open var assetPortraitColumnCount: Int = UI_USER_INTERFACE_IDIOM() == .pad ? 5 : 3
     open var assetPortraitInteritemSpace: CGFloat = 1
     open var assetPortraitLineSpace: CGFloat = 1
     
