@@ -189,7 +189,7 @@ extension ThirdPartiesPhotoViewController {
         // Init Activity Indicator
         indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        indicator.center = collectionView.center
+        indicator.center = view.center
         view.addSubview(indicator)
         view.setNeedsUpdateConstraints()
     }
