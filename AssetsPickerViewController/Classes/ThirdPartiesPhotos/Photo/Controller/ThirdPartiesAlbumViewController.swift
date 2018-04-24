@@ -81,8 +81,7 @@ open class ThirdPartiesAlbumViewController: UIViewController {
         // Init Activity Indicator
         indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        indicator.center = view.center
-        indicator.hidesWhenStopped = true
+        indicator.center = collectionView.center
         view.addSubview(indicator)
         
         view.setNeedsUpdateConstraints()        
