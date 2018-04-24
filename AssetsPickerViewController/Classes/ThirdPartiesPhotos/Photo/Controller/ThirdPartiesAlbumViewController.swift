@@ -88,11 +88,11 @@ open class ThirdPartiesAlbumViewController: UIViewController {
         view.setNeedsUpdateConstraints()        
     }
     
-    func activityIndicatorStartLoading() {
+    open func activityIndicatorStartLoading() {
         indicator.startAnimating()
     }
     
-    func activityIndicatorStop() {
+    open func activityIndicatorStop() {
         indicator.stopAnimating()
     }
     
