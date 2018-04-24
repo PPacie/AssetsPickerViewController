@@ -11,7 +11,7 @@ import PureLayout
 
 // MARK: - AssetsAlbumViewControllerDelegate
 public protocol ThirdPartiesAlbumViewControllerDelegate {
-    func thirdPartySelectedAlbum(controller: ThirdPartiesAlbumViewController, selected album: [PhotoViewModel])
+    func thirdPartyAlbum(selected album: AlbumViewModel)
 }
 
 open class ThirdPartiesAlbumViewController: UIViewController {
@@ -22,7 +22,7 @@ open class ThirdPartiesAlbumViewController: UIViewController {
     private let headerReuseIdentifier: String = UUID().uuidString
     private var didSetupConstraints = false
     
-    public var albums: [PhotoViewModel] = [] {
+    public var albums: [AlbumViewModel] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -31,7 +31,6 @@ open class ThirdPartiesAlbumViewController: UIViewController {
     }
     
     lazy var collectionView: UICollectionView = {
-        
         let isPortrait = UIApplication.shared.statusBarOrientation.isPortrait
         
         let layout = AssetsAlbumLayout()
@@ -42,8 +41,7 @@ open class ThirdPartiesAlbumViewController: UIViewController {
         let itemSpace = layout.albumItemSpace(isPortrait: isPortrait)
         let view = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
         view.configureForAutoLayout()
-        view.register(PhotoCell.classForCoder(), forCellWithReuseIdentifier: self.cellReuseIdentifier)
-        view.register(AssetsAlbumHeaderView.classForCoder(), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.headerReuseIdentifier)
+        view.register(AlbumCell.classForCoder(), forCellWithReuseIdentifier: self.cellReuseIdentifier)
         view.contentInset = UIEdgeInsets(top: defaultSpace, left: itemSpace, bottom: defaultSpace, right: itemSpace)
         view.backgroundColor = UIColor.clear
         view.dataSource = self
@@ -66,9 +64,9 @@ open class ThirdPartiesAlbumViewController: UIViewController {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
-    public init(assets: [PhotoViewModel]) {
+    public init(albums: [AlbumViewModel]) {
         self.init()
-        self.albums = assets
+        self.albums = albums
     }
     
     deinit { logd("Released \(type(of: self))") }
@@ -81,7 +79,7 @@ open class ThirdPartiesAlbumViewController: UIViewController {
         view.setNeedsUpdateConstraints()
         
         title = String(key: "Title_Albums")
-        navigationController?.navigationBar.isHidden = true
+        //navigationController?.navigationBar.isHidden = true
     }
     
     open override func updateViewConstraints() {
@@ -123,7 +121,7 @@ extension ThirdPartiesAlbumViewController {
 // MARK: - UICollectionViewDelegate
 extension ThirdPartiesAlbumViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.thirdPartySelectedAlbum(controller: self, selected: [])
+        delegate?.thirdPartyAlbum(selected: albums[indexPath.row])
     }
 }
 
@@ -137,7 +135,7 @@ extension ThirdPartiesAlbumViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath)
-        guard let _ = cell as? AssetsAlbumCellProtocol else {
+        guard let _ = cell as? ThirdPartiesAlbumCellProtocol else {
             logw("Failed to cast UICollectionViewCell.")
             return cell
         }
@@ -148,14 +146,11 @@ extension ThirdPartiesAlbumViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         logi("willDisplay[\(indexPath.section)][\(indexPath.row)]")
-        guard var albumCell = cell as? AssetsAlbumCellProtocol else {
+        guard let albumCell = cell as? ThirdPartiesAlbumCellProtocol else {
             logw("Failed to cast UICollectionViewCell.")
             return
         }
-        albumCell.album = AssetsManager.shared.album(at: indexPath)
-        albumCell.titleText = AssetsManager.shared.title(at: indexPath)
-        albumCell.count = AssetsManager.shared.numberOfAssets(at: indexPath)
-
+        albumCell.configure(item: albums[indexPath.row])
     }
 }
 
@@ -176,10 +171,5 @@ extension ThirdPartiesAlbumViewController: UICollectionViewDelegateFlowLayout {
         guard let photoLayout = collectionViewLayout as? AssetsAlbumLayout else { return .zero }
         
         return CGSize(width: collectionView.bounds.width, height: photoLayout.albumItemSpace(isPortrait:  collectionView.bounds.width > collectionView.bounds.height))
-        
-//        if collectionView.numberOfSections > 1 && AssetsManager.shared.numberOfAlbums(inSection: 1) > 0 && section == 1 {
-//
-//        }
-//        return .zero
     }
 }

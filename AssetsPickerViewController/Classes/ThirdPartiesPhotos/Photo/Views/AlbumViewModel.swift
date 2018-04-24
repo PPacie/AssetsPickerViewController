@@ -12,17 +12,14 @@ import Foundation
 @objc public class AlbumViewModel: NSObject {
     public var name: String?
     public var count: Int?
-    public var coverUrl: URL?
+    public var coverURL: URL?
     public var albumId: String?
-    public var photos: [PhotoViewModel] = []
+    public var photos: [AlbumViewModel] = []
     
-    init(name: String,
-         count: Int? = nil,
-         coverUrl: URL? = nil,
-         albmId: String) {
+    public init(name: String, count: Int? = nil, coverURL: URL? = nil, albmId: String) {
         self.name = name
         self.albumId = albmId
-        self.coverUrl = coverUrl
+        self.coverURL = coverURL
         self.count = count
     }
 }

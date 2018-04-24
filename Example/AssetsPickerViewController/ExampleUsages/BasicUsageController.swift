@@ -17,15 +17,27 @@ class BasicUsageController: CommonExampleController {
         
         let photosVC = ThirdPartiesPhotoViewController(assets: loadData())
         photosVC.delegate = self
+        
+        let albumVC = ThirdPartiesAlbumViewController(albums: loadAlbumData())
+        
         let nc = UINavigationController()
-        nc.viewControllers = [photosVC]
+        nc.viewControllers = [albumVC]
         present(nc, animated: true)
     }
     
-    func loadData() -> [PhotoViewModel] {
+    private func loadData() -> [PhotoViewModel] {
         var assets = [PhotoViewModel]()
         for i in 0...40 {
             let asset = PhotoViewModel(url: URL(string: "https://splashbase.s3.amazonaws.com/unsplash/regular/tumblr_mtax0twHix1st5lhmo1_1280.jpg")!, imageID: String(i))
+            assets.append(asset)
+        }
+        return assets
+    }
+    
+    private func loadAlbumData() -> [AlbumViewModel] {
+        var assets = [AlbumViewModel]()
+        for i in 0...40 {
+            let asset = AlbumViewModel(name: String(i), count: 40, coverURL: URL(string: "https://splashbase.s3.amazonaws.com/unsplash/regular/tumblr_mtax0twHix1st5lhmo1_1280.jpg"), albmId: String(i))
             assets.append(asset)
         }
         return assets
