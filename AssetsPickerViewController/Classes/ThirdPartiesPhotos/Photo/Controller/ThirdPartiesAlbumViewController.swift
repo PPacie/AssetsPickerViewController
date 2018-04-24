@@ -21,10 +21,12 @@ open class ThirdPartiesAlbumViewController: UIViewController {
     private let cellReuseIdentifier: String = UUID().uuidString
     private let headerReuseIdentifier: String = UUID().uuidString
     private var didSetupConstraints = false
+    private var indicator = UIActivityIndicatorView()
     
     public var albums: [AlbumViewModel] = [] {
         didSet {
             DispatchQueue.main.async {
+                self.activityIndicatorStop()
                 self.collectionView.reloadData()
             }
         }
@@ -76,7 +78,22 @@ open class ThirdPartiesAlbumViewController: UIViewController {
         
         view.backgroundColor = .white
         view.addSubview(collectionView)
-        view.setNeedsUpdateConstraints()
+        // Init Activity Indicator
+        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        indicator.center = view.center
+        indicator.hidesWhenStopped = true
+        view.addSubview(indicator)
+        
+        view.setNeedsUpdateConstraints()        
+    }
+    
+    func activityIndicatorStartLoading() {
+        indicator.startAnimating()
+    }
+    
+    func activityIndicatorStop() {
+        indicator.stopAnimating()
     }
     
     open override func updateViewConstraints() {

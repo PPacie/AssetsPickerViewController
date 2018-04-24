@@ -34,6 +34,8 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     fileprivate var isPortrait: Bool = true
     fileprivate var leadingConstraint: NSLayoutConstraint?
     fileprivate var trailingConstraint: NSLayoutConstraint?
+    /// Loading indicator
+    fileprivate var indicator: UIActivityIndicatorView!
     
     fileprivate lazy var collectionView: UICollectionView = {
         let layout = AssetsPhotoLayout()
@@ -67,6 +69,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     public var assets: [PhotoViewModel] = [] {
         didSet {
             DispatchQueue.main.async {
+                self.activityIndicatorStop()
                 self.collectionView.reloadData()
                 self.updateFooter()
             }
@@ -93,7 +96,6 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(collectionView)
         view.addSubview(confirmButton)
-        view.setNeedsUpdateConstraints()
         
         initialSetup()
         updateFooter()
@@ -183,6 +185,22 @@ extension ThirdPartiesPhotoViewController {
             weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
         }
         confirmButton.isHidden = true
+        
+        // Init Activity Indicator
+        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        indicator.center = view.center
+        indicator.hidesWhenStopped = true
+        view.addSubview(indicator)
+        view.setNeedsUpdateConstraints()
+    }
+    
+    func activityIndicatorStartLoading() {
+        indicator.startAnimating()
+    }
+    
+    func activityIndicatorStop() {
+        indicator.stopAnimating()
     }
 }
 
