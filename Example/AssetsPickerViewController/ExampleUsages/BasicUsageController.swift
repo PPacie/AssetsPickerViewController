@@ -10,17 +10,17 @@ import AssetsPickerViewController
 
 class BasicUsageController: CommonExampleController {
     
+    let nc = UINavigationController()
+    
     override func pressedPick(_ sender: Any) {
 //        let picker = AssetsPickerViewController()
 //        picker.pickerDelegate = self
 //        present(picker, animated: true, completion: nil)
         
-        let photosVC = ThirdPartiesPhotoViewController(assets: loadData())
-        photosVC.delegate = self
+
         
         let albumVC = ThirdPartiesAlbumViewController(albums: loadAlbumData())
-        
-        let nc = UINavigationController()
+        albumVC.delegate = self
         nc.viewControllers = [albumVC]
         present(nc, animated: true)
     }
@@ -45,9 +45,16 @@ class BasicUsageController: CommonExampleController {
 }
 
 extension BasicUsageController: ThirdPartiesPhotoViewControllerDelegate {
-    
     func assetsPicker(selected assets: [PhotoViewModel]) {
         print("Assets Count:", assets.count)
         dismiss(animated: true)
+    }
+}
+extension BasicUsageController: ThirdPartiesAlbumViewControllerDelegate {
+    func thirdPartyAlbum(selected album: AlbumViewModel) {
+        print("Album Title", album.name ?? "NO NAME")
+        let photosVC = ThirdPartiesPhotoViewController(assets: loadData())
+        photosVC.delegate = self
+        nc.pushViewController(photosVC, animated: true)
     }
 }

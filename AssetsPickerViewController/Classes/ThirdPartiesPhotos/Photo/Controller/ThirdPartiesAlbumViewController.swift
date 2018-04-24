@@ -77,9 +77,6 @@ open class ThirdPartiesAlbumViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(collectionView)
         view.setNeedsUpdateConstraints()
-        
-        title = String(key: "Title_Albums")
-        //navigationController?.navigationBar.isHidden = true
     }
     
     open override func updateViewConstraints() {
@@ -113,7 +110,6 @@ extension ThirdPartiesAlbumViewController {
             flowLayout.itemSize = isPortrait ? flowLayout.albumPortraitCellSize : flowLayout.albumLandscapeCellSize
             flowLayout.minimumLineSpacing = flowLayout.albumDefaultSpace
             flowLayout.minimumInteritemSpacing = flowLayout.albumItemSpace(isPortrait: isPortrait)
-            logi("flowLayout: itemSize=\(flowLayout.itemSize), minimumInteritemSpacing=\(flowLayout.minimumInteritemSpacing)")
         }
     }
 }
@@ -145,31 +141,10 @@ extension ThirdPartiesAlbumViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        logi("willDisplay[\(indexPath.section)][\(indexPath.row)]")
         guard let albumCell = cell as? ThirdPartiesAlbumCellProtocol else {
             logw("Failed to cast UICollectionViewCell.")
             return
         }
         albumCell.configure(item: albums[indexPath.row])
-    }
-}
-
-// MARK: - UICollectionViewDelegateFlowLayout
-extension ThirdPartiesAlbumViewController: UICollectionViewDelegateFlowLayout {
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        guard let photoLayout = collectionViewLayout as? AssetsAlbumLayout else { return 0 }
-        return photoLayout.albumLineSpace
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        guard let photoLayout = collectionViewLayout as? AssetsAlbumLayout else { return 0 }
-        return photoLayout.albumItemSpace(isPortrait: collectionView.bounds.height > collectionView.bounds.width)
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        guard let photoLayout = collectionViewLayout as? AssetsAlbumLayout else { return .zero }
-        
-        return CGSize(width: collectionView.bounds.width, height: photoLayout.albumItemSpace(isPortrait:  collectionView.bounds.width > collectionView.bounds.height))
     }
 }
