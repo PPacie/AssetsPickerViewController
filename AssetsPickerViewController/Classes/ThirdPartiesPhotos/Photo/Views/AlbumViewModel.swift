@@ -14,7 +14,7 @@ import Foundation
     public var count: Int?
     public var coverURL: URL?
     public var albumId: String?
-    public var photos: [AlbumViewModel] = []
+    public var photos: [PhotoViewModel] = []
     
     public init(name: String, count: Int? = nil, coverURL: URL? = nil, albmId: String) {
         self.name = name
