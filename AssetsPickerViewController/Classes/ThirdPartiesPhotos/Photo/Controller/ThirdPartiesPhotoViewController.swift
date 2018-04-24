@@ -66,8 +66,10 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     
     public var assets: [PhotoViewModel] = [] {
         didSet {
-            collectionView.reloadData()
-            updateFooter()
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                self.updateFooter()
+            }
         }
     }
     
