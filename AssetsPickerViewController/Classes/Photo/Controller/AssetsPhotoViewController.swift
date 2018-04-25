@@ -81,7 +81,7 @@ open class AssetsPhotoViewController: UIViewController {
         
         return view
     }()
-    
+
     var selectedAssets: [PHAsset] {
         return selectedArray
     }
@@ -353,9 +353,8 @@ extension AssetsPhotoViewController {
             // set title with selected count if exists
             if selectedArray.count > 0 {
                 updateNavigationStatus()
-            } else {
-                title = title(forAlbum: album)
             }
+            
             collectionView.reloadData()
             
             for asset in selectedArray {
@@ -432,21 +431,7 @@ extension AssetsPhotoViewController {
         var titleString: String = AssetsManager.shared.selectedAlbum?.localizedTitle ?? ""
         
         if imageCount > 0 && videoCount > 0 {
-            titleString = String(format: String(key: "Title_Selected_Items"), NumberFormatter.decimalString(value: imageCount + videoCount))
-        } else {
-            if imageCount > 0 {
-                if imageCount > 1 {
-                    titleString = String(format: String(key: "Title_Selected_Photos"), NumberFormatter.decimalString(value: imageCount))
-                } else {
-                    titleString = String(format: String(key: "Title_Selected_Photo"), NumberFormatter.decimalString(value: imageCount))
-                }
-            } else if videoCount > 0 {
-                if videoCount > 1 {
-                    titleString = String(format: String(key: "Title_Selected_Videos"), NumberFormatter.decimalString(value: videoCount))
-                } else {
-                    titleString = String(format: String(key: "Title_Selected_Video"), NumberFormatter.decimalString(value: videoCount))
-                }
-            }
+            titleString = String(imageCount).appending("/").appending(String(pickerConfig.maxItemsSelection))
         }
         title = titleString
     }
@@ -469,16 +454,6 @@ extension AssetsPhotoViewController {
         navigationController.viewControllers = [controller]
         
         self.navigationController?.present(navigationController, animated: animated, completion: nil)
-    }
-    
-    func title(forAlbum album: PHAssetCollection?) -> String {
-        var titleString: String!
-        if let albumTitle = album?.localizedTitle {
-            titleString = "\(albumTitle) ▾"
-        } else {
-            titleString = ""
-        }
-        return titleString
     }
 }
 
@@ -525,11 +500,7 @@ extension AssetsPhotoViewController: UIScrollViewDelegate {
 extension AssetsPhotoViewController: UICollectionViewDelegate {
 
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        if let delegate = self.delegate {
-            return delegate.assetsPicker?(controller: picker, shouldSelect: AssetsManager.shared.assetArray[indexPath.row], at: indexPath) ?? true
-        } else {
-            return true
-        }
+        return selectedArray.count < pickerConfig.maxItemsSelection
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

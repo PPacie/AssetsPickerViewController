@@ -15,7 +15,6 @@ import Photos
     @objc optional func assetsPickerDidCancel(controller: AssetsPickerViewController)
     @objc optional func assetsPickerCannotAccessPhotoLibrary(controller: AssetsPickerViewController)
     func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset])
-    @objc optional func assetsPicker(controller: AssetsPickerViewController, shouldSelect asset: PHAsset, at indexPath: IndexPath) -> Bool
     @objc optional func assetsPicker(controller: AssetsPickerViewController, didSelect asset: PHAsset, at indexPath: IndexPath)
     @objc optional func assetsPicker(controller: AssetsPickerViewController, shouldDeselect asset: PHAsset, at indexPath: IndexPath) -> Bool
     @objc optional func assetsPicker(controller: AssetsPickerViewController, didDeselect asset: PHAsset, at indexPath: IndexPath)

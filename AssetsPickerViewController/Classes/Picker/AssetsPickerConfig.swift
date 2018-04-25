@@ -12,7 +12,7 @@ import Photos
 open class AssetsPickerConfig {
     
     // MARK: - Album Config
-
+    open var maxItemsSelection: Int = 1
     /// Set selected album at initial load.
     open var albumDefaultType: PHAssetCollectionSubtype = .smartAlbumUserLibrary
     /// true: shows empty albums, false: hides empty albums
