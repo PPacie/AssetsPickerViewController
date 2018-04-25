@@ -14,7 +14,6 @@ import Device
 // MARK: - ThirdPartiesPhotoViewControllerDelegate
 @objc public protocol ThirdPartiesPhotoViewControllerDelegate: class {
     func assetsPicker(selected assets: [PhotoViewModel])
-    @objc optional func assetsPicker(selectedAssets: Int, shouldSelect asset: PhotoViewModel, at indexPath: IndexPath) -> Bool
     @objc optional func assetsPicker(didSelect asset: PhotoViewModel, at indexPath: IndexPath)
 }
 
@@ -62,7 +61,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         return view
     }()
     
-    var selectedAssets: [PhotoViewModel] {
+    private var selectedAssets: [PhotoViewModel] {
         return selectedArray
     }
     
@@ -75,6 +74,9 @@ open class ThirdPartiesPhotoViewController: UIViewController {
             }
         }
     }
+    
+    public var maxItemsSelection: Int = 1
+    public var albumTitle = NSLocalizedString("My Album", comment: "")
     
     // MARK: Lifecycle Methods
     required public init?(coder aDecoder: NSCoder) {
@@ -177,7 +179,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
 // MARK: - Initial Setups
 extension ThirdPartiesPhotoViewController {
     
-    func initialSetup() {
+    private func initialSetup() {
         view.backgroundColor = .white
 
         confirmButton.buttonPressedHandler = { [weak self] in
@@ -206,7 +208,7 @@ extension ThirdPartiesPhotoViewController {
 // MARK: - Internal APIs for UI
 extension ThirdPartiesPhotoViewController {
     
-    func updateLayout(layout: UICollectionViewLayout, isPortrait: Bool? = nil) {
+    private func updateLayout(layout: UICollectionViewLayout, isPortrait: Bool? = nil) {
         guard let photoLayout = layout as? AssetsPhotoLayout else { return }
         if let isPortrait = isPortrait {
             self.isPortrait = isPortrait
@@ -216,7 +218,7 @@ extension ThirdPartiesPhotoViewController {
         photoLayout.minimumInteritemSpacing = self.isPortrait ? photoLayout.assetPortraitInteritemSpace : photoLayout.assetLandscapeInteritemSpace
     }
 
-    func select(asset: PhotoViewModel, at indexPath: IndexPath) {
+    private func select(asset: PhotoViewModel, at indexPath: IndexPath) {
         if let _ = selectedMap[asset.imageID] {
             logw("Invalid status.")
             return
@@ -232,7 +234,7 @@ extension ThirdPartiesPhotoViewController {
         photoCell.count = selectedArray.count
     }
     
-    func deselect(asset: PhotoViewModel, at indexPath: IndexPath) {
+    private func deselect(asset: PhotoViewModel, at indexPath: IndexPath) {
         guard let targetAsset = selectedMap[asset.imageID] else {
             logw("Invalid status.")
             return
@@ -247,7 +249,7 @@ extension ThirdPartiesPhotoViewController {
         updateSelectionCount()
     }
     
-    func updateSelectionCount() {
+    private func updateSelectionCount() {
         let visibleIndexPaths = collectionView.indexPathsForVisibleItems
         for visibleIndexPath in visibleIndexPaths {
             guard assets.count > visibleIndexPath.row else {
@@ -262,42 +264,22 @@ extension ThirdPartiesPhotoViewController {
         }
     }
     
-    func updateNavigationStatus() {
-        confirmButton.isHidden = selectedArray.count == 0 //!(selectedArray.count >= (pickerConfig.assetsMinimumSelectionCount > 0 ? pickerConfig.assetsMinimumSelectionCount : 1))
-        
+    private func updateNavigationStatus() {
+        confirmButton.isHidden = selectedArray.count == 0
         let imageCount = selectedArray.count
         
-        var titleString: String = "_Images"
-        
         if imageCount > 0 {
-            titleString = String(format: String(key: "Title_Selected_Items"), NumberFormatter.decimalString(value: imageCount))
+            title = String(imageCount).appending("/").appending(String(maxItemsSelection))
         } else {
-            if imageCount > 0 {
-                if imageCount > 1 {
-                    titleString = String(format: String(key: "Title_Selected_Photos"), NumberFormatter.decimalString(value: imageCount))
-                } else {
-                    titleString = String(format: String(key: "Title_Selected_Photo"), NumberFormatter.decimalString(value: imageCount))
-                }
-            }
+            title = albumTitle
         }
-        title = titleString
     }
     
-    func updateFooter() {
+    private func updateFooter() {
         guard let footerView = collectionView.visibleSupplementaryViews(ofKind: UICollectionElementKindSectionFooter).last as? AssetsPhotoFooterView else {
             return
         }
         footerView.set(imageCount: assets.count, videoCount: 0)
-    }
-    
-    func title(forAlbum album: PHAssetCollection?) -> String {
-        var titleString: String!
-        if let albumTitle = album?.localizedTitle {
-            titleString = "\(albumTitle) ▾"
-        } else {
-            titleString = ""
-        }
-        return titleString
     }
 }
 
@@ -305,11 +287,7 @@ extension ThirdPartiesPhotoViewController {
 extension ThirdPartiesPhotoViewController: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        if let delegate = self.delegate {
-            return delegate.assetsPicker?(selectedAssets: selectedAssets.count, shouldSelect: assets[indexPath.row], at: indexPath) ?? true
-        } else {
-            return true
-        }
+        return selectedArray.count < maxItemsSelection
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -335,8 +313,6 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegate {
 extension ThirdPartiesPhotoViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //let count = AssetsManager.shared.assetArray.count
-        //updateEmptyView(count: count)
         return assets.count
     }
     
