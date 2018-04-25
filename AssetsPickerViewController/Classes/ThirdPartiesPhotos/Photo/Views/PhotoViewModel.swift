@@ -18,4 +18,11 @@ import Foundation
         self.imageID = imageID
         self.thumbnail = thumbnail
     }
+    
+    override public func isEqual(_ object: Any?) -> Bool {
+        if let rhs = object as? PhotoViewModel {
+            return imageID == rhs.imageID
+        }
+        return false
+    }
 }

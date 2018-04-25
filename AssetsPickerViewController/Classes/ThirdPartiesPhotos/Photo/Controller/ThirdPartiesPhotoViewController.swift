@@ -71,6 +71,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
                 self.activityIndicatorStop()
                 self.collectionView.reloadData()
                 self.updateFooter()
+                self.setupPreSelectedItems()
             }
         }
     }
@@ -202,6 +203,24 @@ extension ThirdPartiesPhotoViewController {
     
     open func activityIndicatorStop() {
         indicator.stopAnimating()
+    }
+    
+    private func setupPreSelectedItems() {
+        if self.selectedArray.count > 0 {
+            self.collectionView.performBatchUpdates({ [weak self] in
+                self?.collectionView.reloadData()
+                }, completion: { [weak self] (finished) in
+                    guard let `self` = self else { return }
+                    // initialize preselected assets
+                    self.selectedArray.forEach({ [weak self] (asset) in
+                        if let row = self?.assets.index(of: asset) {
+                            let indexPathToSelect = IndexPath(row: row, section: 0)
+                            self?.collectionView.selectItem(at: indexPathToSelect, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue: 0))
+                        }
+                    })
+                    self.updateSelectionCount()
+            })
+        }
     }
 }
 
