@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ConfirmButtonView: UIView {
+public class ConfirmButtonView: UIView {
     
     private var didSetupConstraints = false
     private let button = UIButton(type: .system)
@@ -15,7 +15,7 @@ class ConfirmButtonView: UIView {
     
     var buttonPressedHandler: (() -> ())?
     
-    required init(title: String, color: UIColor = UIColor(red: 255/255, green: 112/255, blue: 177/255, alpha: 1)) {
+    required public init(title: String, color: UIColor = UIColor(red: 255/255, green: 112/255, blue: 177/255, alpha: 1)) {
         super.init(frame: .zero)
         
         layer.cornerRadius = height / 2
@@ -28,11 +28,11 @@ class ConfirmButtonView: UIView {
         button.setTitleColor(.white, for: .normal)        
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func updateConstraints() {
+    override public func updateConstraints() {
         if !didSetupConstraints {
             autoSetDimension(.height, toSize: height)
             button.autoPinEdgesToSuperviewEdges()
@@ -44,5 +44,4 @@ class ConfirmButtonView: UIView {
     @objc fileprivate func pressed() {
         buttonPressedHandler?()
     }
-
 }
