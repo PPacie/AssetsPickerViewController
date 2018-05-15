@@ -13,7 +13,7 @@ public class ConfirmButtonView: UIView {
     private let button = UIButton(type: .system)
     private let height: CGFloat = 50
     
-    var buttonPressedHandler: (() -> ())?
+    public var buttonPressedHandler: (() -> ())?
     
     required public init(title: String, color: UIColor = UIColor(red: 255/255, green: 112/255, blue: 177/255, alpha: 1)) {
         super.init(frame: .zero)
