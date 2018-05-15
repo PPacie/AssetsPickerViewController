@@ -25,7 +25,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     // MARK: Properties
     fileprivate let cellReuseIdentifier: String = UUID().uuidString
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
-    fileprivate let confirmButton = ConfirmButtonView(title:NSLocalizedString("NEXT", comment: ""))
+    fileprivate let confirmButton = ConfirmButtonView(title:"NEXT".localizedUppercase)
     fileprivate var selectedArray = [PhotoViewModel]()
     fileprivate var selectedMap = [String: PhotoViewModel]()
     fileprivate var didSetupConstraints = false
@@ -77,7 +77,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     }
     
     public var maxItemsSelection: Int = 1
-    public var albumTitle = NSLocalizedString("My Album", comment: "")
+    public var albumTitle = "My Album".localizedCapitalized
     
     // MARK: Lifecycle Methods
     required public init?(coder aDecoder: NSCoder) {
@@ -287,11 +287,16 @@ extension ThirdPartiesPhotoViewController {
         confirmButton.isHidden = selectedArray.count == 0
         let imageCount = selectedArray.count
         
+        var newTitle = albumTitle
+        
         if imageCount > 0 {
-            title = String(imageCount).appending("/").appending(String(maxItemsSelection))
+            newTitle = String(imageCount).appending("/").appending(String(maxItemsSelection))
         } else {
-            title = albumTitle
+            title = newTitle
         }
+        
+        navigationController?.title = newTitle
+        title = newTitle
     }
     
     private func updateFooter() {

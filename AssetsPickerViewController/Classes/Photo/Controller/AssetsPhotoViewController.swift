@@ -25,11 +25,11 @@ open class AssetsPhotoViewController: UIViewController {
     fileprivate var requestIdMap = [IndexPath: PHImageRequestID]()
     
     fileprivate lazy var cancelButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: String(key: "Cancel"), style: .plain, target: self, action: #selector(pressedCancel(button:)))
+        let buttonItem = UIBarButtonItem(title: String(key:"Cancel"), style: .plain, target: self, action: #selector(pressedCancel(button:)))
         return buttonItem
     }()
     
-    fileprivate let confirmButton = ConfirmButtonView(title: "next")
+    fileprivate let confirmButton = ConfirmButtonView(title: "NEXT".localizedUppercase)
     
     fileprivate let emptyView: AssetsEmptyView = {
         return AssetsEmptyView.newAutoLayout()
@@ -222,7 +222,6 @@ open class AssetsPhotoViewController: UIViewController {
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //setupGestureRecognizer()
         if traitCollection.forceTouchCapability == .available {
             //previewing = registerForPreviewing(with: self, sourceView: collectionView)
         }
@@ -230,7 +229,6 @@ open class AssetsPhotoViewController: UIViewController {
     
     override open func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        removeGestureRecognizer()
         if let previewing = self.previewing {
             self.previewing = nil
             unregisterForPreviewing(withContext: previewing)
@@ -283,24 +281,6 @@ extension AssetsPhotoViewController {
                         self.updateSelectionCount()
                 })
             }
-        }
-    }
-    
-    func setupGestureRecognizer() {
-        if let _ = self.tapGesture {
-            // ignore
-        } else {
-            let gesture = UITapGestureRecognizer(target: self, action: #selector(pressedTitle))
-            navigationController?.navigationBar.addGestureRecognizer(gesture)
-            gesture.delegate = self
-            tapGesture = gesture
-        }
-    }
-    
-    func removeGestureRecognizer() {
-        if let tapGesture = self.tapGesture {
-            navigationController?.navigationBar.removeGestureRecognizer(tapGesture)
-            self.tapGesture = nil
         }
     }
 }
@@ -441,18 +421,6 @@ extension AssetsPhotoViewController {
         footerView.set(imageCount: AssetsManager.shared.count(ofType: .image), videoCount: AssetsManager.shared.count(ofType: .video))
     }
     
-    func presentAlbumController(animated: Bool = true) {
-        guard PHPhotoLibrary.authorizationStatus() == .authorized else { return }
-        let navigationController = UINavigationController()
-        if #available(iOS 11.0, *) {
-            navigationController.navigationBar.prefersLargeTitles = true
-        }
-        let controller = AssetsAlbumViewController(pickerConfig: self.pickerConfig)
-        controller.delegate = self
-        navigationController.viewControllers = [controller]
-        
-        self.navigationController?.present(navigationController, animated: animated, completion: nil)
-    }
 }
 
 // MARK: - UI Event Handlers
@@ -470,10 +438,6 @@ extension AssetsPhotoViewController {
             self.delegate?.assetsPicker?(controller: self.picker, didDismissByCancelling: false)
         })
         delegate?.assetsPicker(controller: picker, selected: selectedArray)
-    }
-    
-    @objc func pressedTitle(gesture: UITapGestureRecognizer) {
-        presentAlbumController()
     }
 }
 

@@ -13,12 +13,6 @@ class BasicUsageController: CommonExampleController {
     let nc = UINavigationController()
     
     override func pressedPick(_ sender: Any) {
-//        let picker = AssetsPickerViewController()
-//        picker.pickerDelegate = self
-//        present(picker, animated: true, completion: nil)
-        
-
-        
         let albumVC = ThirdPartiesAlbumViewController(albums: loadAlbumData())
         albumVC.delegate = self
         nc.viewControllers = [albumVC]
@@ -54,6 +48,7 @@ extension BasicUsageController: ThirdPartiesAlbumViewControllerDelegate {
     func thirdPartyAlbum(selected album: AlbumViewModel) {
         print("Album Title", album.name ?? "NO NAME")
         let photosVC = ThirdPartiesPhotoViewController(assets: loadData())
+        photosVC.maxItemsSelection = 5
         photosVC.delegate = self
         nc.pushViewController(photosVC, animated: true)
     }
