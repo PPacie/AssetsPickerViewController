@@ -45,5 +45,5 @@ Fully customizable UI.
   s.dependency 'TinyLog', '~> 2.0'
   s.dependency 'SwiftARGB', '~> 2.0'
   s.dependency 'Device', '~> 3.0.3'
-  s.dependency 'SDWebImage', '~>3.7'
+  s.dependency 'SDWebImage', '~>4.0'
 end
