@@ -396,7 +396,7 @@ extension AssetsPhotoViewController {
     }
     
     func updateNavigationStatus() {
-        confirmButton.isHidden = selectedArray.count == 0 //!(selectedArray.count >= (pickerConfig.assetsMinimumSelectionCount > 0 ? pickerConfig.assetsMinimumSelectionCount : 1))    
+        confirmButton.isHidden = !(selectedArray.count >= (pickerConfig.assetsMinimumSelectionCount > 0 ? pickerConfig.assetsMinimumSelectionCount : 1))    
         
         let counts: (imageCount: Int, videoCount: Int) = selectedArray.reduce((0, 0)) { (result, asset) -> (Int, Int) in
             let imageCount = asset.mediaType == .image ? 1 : 0

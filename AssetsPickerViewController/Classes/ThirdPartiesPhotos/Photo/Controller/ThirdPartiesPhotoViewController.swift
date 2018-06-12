@@ -78,6 +78,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     
     public var maxItemsSelection: Int = 1
     public var albumTitle = "My Album".localizedCapitalized
+    public var minItemsSelection: Int = 0
     
     // MARK: Lifecycle Methods
     required public init?(coder aDecoder: NSCoder) {
@@ -284,7 +285,7 @@ extension ThirdPartiesPhotoViewController {
     }
     
     private func updateNavigationStatus() {
-        confirmButton.isHidden = selectedArray.count == 0
+        confirmButton.isHidden = !(selectedArray.count >= (minItemsSelection > 0 ? minItemsSelection : 1))
         let imageCount = selectedArray.count
         
         var newTitle = albumTitle
@@ -295,8 +296,9 @@ extension ThirdPartiesPhotoViewController {
             title = newTitle
         }
         
+        parent?.navigationController?.title = newTitle
         navigationController?.title = newTitle
-        title = newTitle
+        //title = newTitle
     }
     
     private func updateFooter() {
