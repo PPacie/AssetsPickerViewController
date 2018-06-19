@@ -25,7 +25,8 @@ public class ConfirmButtonView: UIView {
         button.setTitle(title.uppercased(), for: .normal)
         button.addTarget(self, action: #selector(pressed), for: .touchUpInside)
         button.backgroundColor = color
-        button.setTitleColor(.white, for: .normal)        
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
     }
     
     required public init?(coder aDecoder: NSCoder) {
