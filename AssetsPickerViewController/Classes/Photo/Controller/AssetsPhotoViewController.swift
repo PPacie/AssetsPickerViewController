@@ -264,7 +264,7 @@ extension AssetsPhotoViewController {
             guard let `self` = self else { return }
             
             self.updateEmptyView(count: photos.count)
-            self.title = manager.selectedAlbum?.localizedTitle
+            self.navigationItem.title = manager.selectedAlbum?.localizedTitle
             
             if self.selectedArray.count > 0 {
                 self.collectionView.performBatchUpdates({ [weak self] in

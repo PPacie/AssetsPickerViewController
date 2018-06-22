@@ -293,12 +293,10 @@ extension ThirdPartiesPhotoViewController {
         if imageCount > 0 {
             newTitle = String(imageCount).appending("/").appending(String(maxItemsSelection))
         } else {
-            title = newTitle
+            navigationItem.title = newTitle
         }
         
-        parent?.navigationController?.title = newTitle
-        navigationController?.title = newTitle
-        //title = newTitle
+        navigationItem.title = newTitle
     }
     
     private func updateFooter() {
