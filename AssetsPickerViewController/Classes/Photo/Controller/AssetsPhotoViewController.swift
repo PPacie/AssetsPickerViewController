@@ -236,6 +236,7 @@ open class AssetsPhotoViewController: UIViewController {
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateNavigationStatus()
+        activityIndicatorStop()
     }
     
     override open func viewDidAppear(_ animated: Bool) {
@@ -243,7 +244,6 @@ open class AssetsPhotoViewController: UIViewController {
         if traitCollection.forceTouchCapability == .available {
             //previewing = registerForPreviewing(with: self, sourceView: collectionView)
         }
-        activityIndicatorStop()
     }
     
     override open func viewDidDisappear(_ animated: Bool) {
