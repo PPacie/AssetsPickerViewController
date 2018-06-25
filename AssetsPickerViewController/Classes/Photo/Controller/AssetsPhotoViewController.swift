@@ -23,6 +23,7 @@ open class AssetsPhotoViewController: UIViewController {
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
     
     fileprivate var requestIdMap = [IndexPath: PHImageRequestID]()
+    fileprivate var indicator = UIActivityIndicatorView()
     
     fileprivate lazy var cancelButtonItem: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: String(key:"Cancel"), style: .plain, target: self, action: #selector(pressedCancel(button:)))
@@ -102,6 +103,14 @@ open class AssetsPhotoViewController: UIViewController {
         viewDidLoad()
     }
     
+    open func activityIndicatorStartLoading() {
+        indicator.startAnimating()
+    }
+    
+    open func activityIndicatorStop() {
+        indicator.stopAnimating()
+    }
+    
     override open func loadView() {
         super.loadView()
         view = UIView()
@@ -110,6 +119,13 @@ open class AssetsPhotoViewController: UIViewController {
         view.addSubview(emptyView)
         view.addSubview(noPermissionView)
         view.addSubview(confirmButton)
+        
+        //Activity Indicator
+        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        indicator.center = view.center
+        view.addSubview(indicator)
+        
         view.setNeedsUpdateConstraints()
     }
     
@@ -225,6 +241,7 @@ open class AssetsPhotoViewController: UIViewController {
         if traitCollection.forceTouchCapability == .available {
             //previewing = registerForPreviewing(with: self, sourceView: collectionView)
         }
+        activityIndicatorStop()
     }
     
     override open func viewDidDisappear(_ animated: Bool) {
@@ -251,6 +268,7 @@ extension AssetsPhotoViewController {
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
             weakSelf.delegate?.assetsPicker(controller: weakSelf.picker, selected: weakSelf.selectedArray)
+            weakSelf.activityIndicatorStartLoading()
         }
         confirmButton.isHidden = true
     }

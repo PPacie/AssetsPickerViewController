@@ -171,6 +171,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateNavigationStatus()
+        activityIndicatorStop()
     }
     
     deinit {
@@ -187,6 +188,7 @@ extension ThirdPartiesPhotoViewController {
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
             weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
+            weakSelf.activityIndicatorStartLoading()
         }
         confirmButton.isHidden = true
         
