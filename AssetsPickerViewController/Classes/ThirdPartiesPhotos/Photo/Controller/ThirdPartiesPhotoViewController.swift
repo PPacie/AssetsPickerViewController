@@ -200,11 +200,15 @@ extension ThirdPartiesPhotoViewController {
     }
     
     open func activityIndicatorStartLoading() {
-        indicator.startAnimating()
+        DispatchQueue.main.async {
+            self.indicator.startAnimating()
+        }
     }
     
     open func activityIndicatorStop() {
-        indicator.stopAnimating()
+        DispatchQueue.main.async {
+            self.indicator.stopAnimating()
+        }        
     }
     
     private func setupPreSelectedItems() {

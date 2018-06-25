@@ -104,12 +104,16 @@ open class AssetsPhotoViewController: UIViewController {
     }
     
     open func activityIndicatorStartLoading() {
-        indicator.center = view.center
-        indicator.startAnimating()
+        DispatchQueue.main.async {
+            self.indicator.center = self.view.center
+            self.indicator.startAnimating()
+        }
     }
     
     open func activityIndicatorStop() {
-        indicator.stopAnimating()
+        DispatchQueue.main.async {
+            self.indicator.stopAnimating()
+        }
     }
     
     override open func loadView() {
