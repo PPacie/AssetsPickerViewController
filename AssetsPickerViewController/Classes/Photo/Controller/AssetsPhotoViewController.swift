@@ -119,13 +119,6 @@ open class AssetsPhotoViewController: UIViewController {
         view.addSubview(emptyView)
         view.addSubview(noPermissionView)
         view.addSubview(confirmButton)
-        
-        //Activity Indicator
-        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        indicator.center = view.center
-        view.addSubview(indicator)
-        
         view.setNeedsUpdateConstraints()
     }
     
@@ -262,6 +255,13 @@ extension AssetsPhotoViewController {
     
     func setupCommon() {
         view.backgroundColor = .white
+        
+        //Activity Indicator
+        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        indicator.center = view.center
+        view.addSubview(indicator)
+        view.setNeedsUpdateConstraints()        
     }
     
     func setupButtonItems() {

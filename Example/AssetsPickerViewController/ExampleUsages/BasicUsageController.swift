@@ -41,7 +41,7 @@ class BasicUsageController: CommonExampleController {
 extension BasicUsageController: ThirdPartiesPhotoViewControllerDelegate {
     func assetsPicker(selected assets: [PhotoViewModel]) {
         print("Assets Count:", assets.count)
-        dismiss(animated: true)
+        //dismiss(animated: true)
     }
 }
 extension BasicUsageController: ThirdPartiesAlbumViewControllerDelegate {
