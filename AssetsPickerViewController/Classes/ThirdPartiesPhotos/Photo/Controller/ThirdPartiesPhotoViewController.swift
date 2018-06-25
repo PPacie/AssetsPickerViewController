@@ -193,6 +193,7 @@ extension ThirdPartiesPhotoViewController {
         confirmButton.isHidden = true
         
         // Init Activity Indicator
+        indicator.color = .lightGray
         indicator.center = view.center
         view.addSubview(indicator)
         view.setNeedsUpdateConstraints()
