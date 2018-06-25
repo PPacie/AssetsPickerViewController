@@ -23,7 +23,7 @@ open class AssetsPhotoViewController: UIViewController {
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
     
     fileprivate var requestIdMap = [IndexPath: PHImageRequestID]()
-    fileprivate var indicator = UIActivityIndicatorView()
+    fileprivate var indicator = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
     
     fileprivate lazy var cancelButtonItem: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: String(key:"Cancel"), style: .plain, target: self, action: #selector(pressedCancel(button:)))
@@ -257,8 +257,6 @@ extension AssetsPhotoViewController {
         view.backgroundColor = .white
         
         //Activity Indicator
-        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
         indicator.center = view.center
         view.addSubview(indicator)
         view.setNeedsUpdateConstraints()        
@@ -267,8 +265,8 @@ extension AssetsPhotoViewController {
     func setupButtonItems() {
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
-            weakSelf.delegate?.assetsPicker(controller: weakSelf.picker, selected: weakSelf.selectedArray)
             weakSelf.activityIndicatorStartLoading()
+            weakSelf.delegate?.assetsPicker(controller: weakSelf.picker, selected: weakSelf.selectedArray)
         }
         confirmButton.isHidden = true
     }
