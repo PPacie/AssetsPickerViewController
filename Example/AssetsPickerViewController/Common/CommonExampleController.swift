@@ -93,43 +93,39 @@ extension CommonExampleController {
 
 extension CommonExampleController: AssetsPickerViewControllerDelegate {
     
-    func assetsPickerCannotAccessPhotoLibrary(controller: AssetsPickerViewController) {
+    func assetsPickerCannotAccessPhotoLibrary() {
         logw("Need permission to access photo library.")
     }
     
-    func assetsPickerDidCancel(controller: AssetsPickerViewController) {
+    func assetsPickerDidCancel() {
         logi("Cancelled.")
     }
     
-    func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset]) {
+    func assetsPicker(selected assets: [PHAsset]) {
         self.assets = assets
         tableView.reloadData()
+        dismiss(animated: true)
     }
     
-    func assetsPicker(controller: AssetsPickerViewController, shouldSelect asset: PHAsset, at indexPath: IndexPath) -> Bool {
+    func assetsPicker(shouldSelect asset: PHAsset, at indexPath: IndexPath) -> Bool {
         logi("shouldSelect: \(indexPath.row)")
-        
-        // can limit selection count
-        if controller.selectedAssets.count > 3 {
-            // do your job here
-        }
         return true
     }
     
-    func assetsPicker(controller: AssetsPickerViewController, didSelect asset: PHAsset, at indexPath: IndexPath) {
+    func assetsPicker(didSelect asset: PHAsset, at indexPath: IndexPath) {
         logi("didSelect: \(indexPath.row)")
     }
     
-    func assetsPicker(controller: AssetsPickerViewController, shouldDeselect asset: PHAsset, at indexPath: IndexPath) -> Bool {
+    func assetsPicker(shouldDeselect asset: PHAsset, at indexPath: IndexPath) -> Bool {
         logi("shouldDeselect: \(indexPath.row)")
         return true
     }
     
-    func assetsPicker(controller: AssetsPickerViewController, didDeselect asset: PHAsset, at indexPath: IndexPath) {
+    func assetsPicker(didDeselect asset: PHAsset, at indexPath: IndexPath) {
         logi("didDeselect: \(indexPath.row)")
     }
     
-    func assetsPicker(controller: AssetsPickerViewController, didDismissByCancelling byCancel: Bool) {
+    func assetsPicker(didDismissByCancelling byCancel: Bool) {
         logi("dismiss completed - byCancel: \(byCancel)")
     }
 }

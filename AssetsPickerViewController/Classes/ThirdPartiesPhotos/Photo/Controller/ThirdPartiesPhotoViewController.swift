@@ -13,8 +13,8 @@ import Device
 
 // MARK: - ThirdPartiesPhotoViewControllerDelegate
 @objc public protocol ThirdPartiesPhotoViewControllerDelegate: class {
-    func assetsPicker(selected assets: [PhotoViewModel])
-    @objc optional func assetsPicker(didSelect asset: PhotoViewModel, at indexPath: IndexPath)
+    @objc func thirdPartyAssetsPicker(selected: [PhotoViewModel])
+    @objc optional func thirdPartyAssetsPicker(didSelect asset: PhotoViewModel, at indexPath: IndexPath)
 }
 
 // MARK: - ThirdPartiesPhotoViewController
@@ -188,7 +188,7 @@ extension ThirdPartiesPhotoViewController {
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
             weakSelf.activityIndicatorStartLoading()
-            weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
+            weakSelf.delegate?.thirdPartyAssetsPicker(selected: weakSelf.selectedArray)
         }
         confirmButton.isHidden = true
         
@@ -323,7 +323,7 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegate {
         let asset = assets[indexPath.row]
         select(asset: asset, at: indexPath)
         updateNavigationStatus()
-        delegate?.assetsPicker?(didSelect: asset, at: indexPath)
+        delegate?.thirdPartyAssetsPicker?(didSelect: asset, at: indexPath)
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {

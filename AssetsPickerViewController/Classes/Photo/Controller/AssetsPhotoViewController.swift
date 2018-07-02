@@ -41,7 +41,6 @@ open class AssetsPhotoViewController: UIViewController {
     }()
     
     weak var delegate: AssetsPickerViewControllerDelegate?
-    var picker: AssetsPickerViewController!
     
     fileprivate var tapGesture: UITapGestureRecognizer?
     fileprivate var syncOffsetRatio: CGFloat = -1
@@ -150,7 +149,7 @@ open class AssetsPhotoViewController: UIViewController {
             if isGranted {
                 self.setupAssets()
             } else {
-                self.delegate?.assetsPickerCannotAccessPhotoLibrary?(controller: self.picker)
+                self.delegate?.assetsPickerCannotAccessPhotoLibrary?()
             }
         }
     }
@@ -255,6 +254,7 @@ open class AssetsPhotoViewController: UIViewController {
     }
     
     deinit {
+        AssetsManager.shared.clear()
         logd("Released \(type(of: self))")
     }
 }
@@ -270,7 +270,7 @@ extension AssetsPhotoViewController {
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
             weakSelf.activityIndicatorStartLoading()
-            weakSelf.delegate?.assetsPicker(controller: weakSelf.picker, selected: weakSelf.selectedArray)
+            weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
         }
         confirmButton.isHidden = true
     }
@@ -448,16 +448,16 @@ extension AssetsPhotoViewController {
     
     @objc func pressedCancel(button: UIBarButtonItem) {
         navigationController?.dismiss(animated: true, completion: {
-            self.delegate?.assetsPicker?(controller: self.picker, didDismissByCancelling: true)
+            self.delegate?.assetsPicker?(didDismissByCancelling: true)
         })
-        delegate?.assetsPickerDidCancel?(controller: picker)
+        delegate?.assetsPickerDidCancel?()
     }
     
     @objc func pressedDone(button: UIBarButtonItem) {
         navigationController?.dismiss(animated: true, completion: {
-            self.delegate?.assetsPicker?(controller: self.picker, didDismissByCancelling: false)
+            self.delegate?.assetsPicker?(didDismissByCancelling: false)
         })
-        delegate?.assetsPicker(controller: picker, selected: selectedArray)
+        delegate?.assetsPicker(selected: selectedArray)
     }
 }
 
@@ -489,12 +489,12 @@ extension AssetsPhotoViewController: UICollectionViewDelegate {
         let asset = AssetsManager.shared.assetArray[indexPath.row]
         select(asset: asset, at: indexPath)
         updateNavigationStatus()
-        delegate?.assetsPicker?(controller: picker, didSelect: asset, at: indexPath)
+        delegate?.assetsPicker?(didSelect: asset, at: indexPath)
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
         if let delegate = self.delegate {
-            return delegate.assetsPicker?(controller: picker, shouldDeselect: AssetsManager.shared.assetArray[indexPath.row], at: indexPath) ?? true
+            return delegate.assetsPicker?(shouldDeselect: AssetsManager.shared.assetArray[indexPath.row], at: indexPath) ?? true
         } else {
             return true
         }
@@ -504,7 +504,7 @@ extension AssetsPhotoViewController: UICollectionViewDelegate {
         let asset = AssetsManager.shared.assetArray[indexPath.row]
         deselect(asset: asset, at: indexPath)
         updateNavigationStatus()
-        delegate?.assetsPicker?(controller: picker, didDeselect: asset, at: indexPath)
+        delegate?.assetsPicker?(didDeselect: asset, at: indexPath)
     }
 }
 

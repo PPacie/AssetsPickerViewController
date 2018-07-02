@@ -14,6 +14,7 @@ class HideEmptyAlbumsController: CommonExampleController {
         
         let pickerConfig = AssetsPickerConfig()
         pickerConfig.albumIsShowEmptyAlbum = false
+        pickerConfig.maxItemsSelection = 2
         
         let picker = AssetsPickerViewController(pickerConfig: pickerConfig)
         picker.pickerDelegate = self

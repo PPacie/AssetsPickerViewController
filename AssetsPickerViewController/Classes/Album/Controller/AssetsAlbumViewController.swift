@@ -12,7 +12,7 @@ import TinyLog
 import PureLayout
 
 // MARK: - AssetsAlbumViewControllerDelegate
-public protocol AssetsAlbumViewControllerDelegate {
+public protocol AssetsAlbumViewControllerDelegate: class {
     func assetsAlbumViewControllerCancelled(controller: AssetsAlbumViewController)
     func assetsAlbumViewController(controller: AssetsAlbumViewController, selected album: PHAssetCollection)
 }
@@ -20,7 +20,7 @@ public protocol AssetsAlbumViewControllerDelegate {
 // MARK: - AssetsAlbumViewController
 open class AssetsAlbumViewController: UIViewController {
     
-    open var delegate: AssetsAlbumViewControllerDelegate?
+    open weak var delegate: AssetsAlbumViewControllerDelegate?
     
     var pickerConfig: AssetsPickerConfig!
     

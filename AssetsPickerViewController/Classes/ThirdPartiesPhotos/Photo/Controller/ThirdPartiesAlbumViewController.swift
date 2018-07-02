@@ -10,13 +10,13 @@ import TinyLog
 import PureLayout
 
 // MARK: - AssetsAlbumViewControllerDelegate
-public protocol ThirdPartiesAlbumViewControllerDelegate {
+public protocol ThirdPartiesAlbumViewControllerDelegate: class {
     func thirdPartyAlbum(selected album: AlbumViewModel)
 }
 
 open class ThirdPartiesAlbumViewController: UIViewController {
 
-    open var delegate: ThirdPartiesAlbumViewControllerDelegate?
+    open weak var delegate: ThirdPartiesAlbumViewControllerDelegate?
     
     private let cellReuseIdentifier: String = UUID().uuidString
     private let headerReuseIdentifier: String = UUID().uuidString

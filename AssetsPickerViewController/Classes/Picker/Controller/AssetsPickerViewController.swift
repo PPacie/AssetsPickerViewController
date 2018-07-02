@@ -12,13 +12,13 @@ import Photos
 
 // MARK: - AssetsPickerViewControllerDelegate
 @objc public protocol AssetsPickerViewControllerDelegate: class {
-    @objc optional func assetsPickerDidCancel(controller: AssetsPickerViewController)
-    @objc optional func assetsPickerCannotAccessPhotoLibrary(controller: AssetsPickerViewController)
-    func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset])
-    @objc optional func assetsPicker(controller: AssetsPickerViewController, didSelect asset: PHAsset, at indexPath: IndexPath)
-    @objc optional func assetsPicker(controller: AssetsPickerViewController, shouldDeselect asset: PHAsset, at indexPath: IndexPath) -> Bool
-    @objc optional func assetsPicker(controller: AssetsPickerViewController, didDeselect asset: PHAsset, at indexPath: IndexPath)
-    @objc optional func assetsPicker(controller: AssetsPickerViewController, didDismissByCancelling byCancel: Bool)
+    @objc optional func assetsPickerDidCancel()
+    @objc optional func assetsPickerCannotAccessPhotoLibrary()
+    func assetsPicker(selected assets: [PHAsset])
+    @objc optional func assetsPicker(didSelect asset: PHAsset, at indexPath: IndexPath)
+    @objc optional func assetsPicker(shouldDeselect asset: PHAsset, at indexPath: IndexPath) -> Bool
+    @objc optional func assetsPicker(didDeselect asset: PHAsset, at indexPath: IndexPath)
+    @objc optional func assetsPicker(didDismissByCancelling byCancel: Bool)
 }
 
 // MARK: - AssetsPickerViewController
@@ -94,7 +94,6 @@ extension AssetsPickerViewController: AssetsAlbumViewControllerDelegate {
     public func assetsAlbumViewController(controller: AssetsAlbumViewController, selected album: PHAssetCollection) {
         photoViewController.select(album: album)
         photoViewController.delegate = pickerDelegate
-        photoViewController.picker = self
         if let nv = navigationController {
             nv.pushViewController(photoViewController, animated: true)
         } else {
