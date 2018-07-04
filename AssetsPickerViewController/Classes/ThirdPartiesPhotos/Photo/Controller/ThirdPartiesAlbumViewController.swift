@@ -9,7 +9,7 @@ import UIKit
 import TinyLog
 import PureLayout
 
-// MARK: - AssetsAlbumViewControllerDelegate
+// MARK: - ThirdPartiesAssetsAlbumViewControllerDelegate
 public protocol ThirdPartiesAlbumViewControllerDelegate: class {
     func thirdPartyAlbum(selected album: AlbumViewModel)
 }

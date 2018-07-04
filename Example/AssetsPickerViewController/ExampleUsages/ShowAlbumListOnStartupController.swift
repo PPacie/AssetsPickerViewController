@@ -21,7 +21,7 @@ class ShowAlbumListOnStartupController: CommonExampleController {
         picker.pickerDelegate = self
         
         let albumVC = AssetsAlbumViewController(pickerConfig: pickerConfig)
-        albumVC.delegate = picker.photoViewController
+        //albumVC.delegate = picker.photoViewController
         let albumNavi = UINavigationController(rootViewController: albumVC)
         albumNavi.modalPresentationStyle = .overCurrentContext
         

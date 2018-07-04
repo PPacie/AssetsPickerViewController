@@ -172,6 +172,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
         super.viewWillAppear(animated)
         updateNavigationStatus()
         activityIndicatorStop()
+        confirmButton.enableConfirmButton()
     }
     
     deinit {

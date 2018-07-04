@@ -43,6 +43,11 @@ public class ConfirmButtonView: UIView {
     }
         
     @objc fileprivate func pressed() {
+        button.isEnabled = false
         buttonPressedHandler?()
+    }
+    
+    func enableConfirmButton() {
+        button.isEnabled = true
     }
 }

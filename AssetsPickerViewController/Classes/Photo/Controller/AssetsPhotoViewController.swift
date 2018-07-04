@@ -42,7 +42,6 @@ open class AssetsPhotoViewController: UIViewController {
     
     weak var delegate: AssetsPickerViewControllerDelegate?
     
-    fileprivate var tapGesture: UITapGestureRecognizer?
     fileprivate var syncOffsetRatio: CGFloat = -1
     
     fileprivate var selectedArray = [PHAsset]()
@@ -236,6 +235,7 @@ open class AssetsPhotoViewController: UIViewController {
         super.viewWillAppear(animated)
         updateNavigationStatus()
         activityIndicatorStop()
+        confirmButton.enableConfirmButton()
     }
     
     override open func viewDidAppear(_ animated: Bool) {
@@ -452,30 +452,6 @@ extension AssetsPhotoViewController {
         })
         delegate?.assetsPickerDidCancel?()
     }
-    
-    @objc func pressedDone(button: UIBarButtonItem) {
-        navigationController?.dismiss(animated: true, completion: {
-            self.delegate?.assetsPicker?(didDismissByCancelling: false)
-        })
-        delegate?.assetsPicker(selected: selectedArray)
-    }
-}
-
-// MARK: - UIGestureRecognizerDelegate
-extension AssetsPhotoViewController: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        guard let navigationBar = navigationController?.navigationBar else { return false }
-        let point = touch.location(in: navigationBar)
-        // Ignore touches on navigation buttons on both sides.
-        return point.x > navigationBar.bounds.width / 4 && point.x < navigationBar.bounds.width * 3 / 4
-    }
-}
-
-// MARK: - UIScrollViewDelegate
-extension AssetsPhotoViewController: UIScrollViewDelegate {
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        logi("contentOffset: \(scrollView.contentOffset)")
-    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -639,18 +615,6 @@ extension AssetsPhotoViewController: UICollectionViewDataSourcePrefetching {
             assets.append(AssetsManager.shared.assetArray[indexPath.row])
         }
         AssetsManager.shared.cache(assets: assets, size: pickerConfig.assetCacheSize)
-    }
-}
-
-// MARK: - AssetsAlbumViewControllerDelegate
-extension AssetsPhotoViewController: AssetsAlbumViewControllerDelegate {
-    
-    public func assetsAlbumViewControllerCancelled(controller: AssetsAlbumViewController) {
-        logi("Cancelled.")
-    }
-    
-    public func assetsAlbumViewController(controller: AssetsAlbumViewController, selected album: PHAssetCollection) {
-        select(album: album)
     }
 }
 
