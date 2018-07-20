@@ -54,7 +54,7 @@ open class SSCheckMark: UIView {
     func drawRectChecked(rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
         
-        let checkmarkBlue2 = UIColor(red: 255/255, green: 65/255, blue: 151/255, alpha: 1)
+        let checkmarkBlue2 = UIColor(red: 255/255, green: 72/255, blue: 149/255, alpha: 1)
         //let shadow2 = UIColor.black
         
         //let shadow2Offset = CGSize(width: 0.1, height: -0.1)
