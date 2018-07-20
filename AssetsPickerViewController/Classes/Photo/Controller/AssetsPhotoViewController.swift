@@ -439,8 +439,7 @@ extension AssetsPhotoViewController {
             return
         }
         footerView.set(imageCount: AssetsManager.shared.count(ofType: .image), videoCount: AssetsManager.shared.count(ofType: .video))
-    }
-    
+    }    
 }
 
 // MARK: - UI Event Handlers
@@ -466,6 +465,7 @@ extension AssetsPhotoViewController: UICollectionViewDelegate {
         select(asset: asset, at: indexPath)
         updateNavigationStatus()
         delegate?.assetsPicker?(didSelect: asset, at: indexPath)
+        self.hapticFeedback()
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
@@ -481,6 +481,7 @@ extension AssetsPhotoViewController: UICollectionViewDelegate {
         deselect(asset: asset, at: indexPath)
         updateNavigationStatus()
         delegate?.assetsPicker?(didDeselect: asset, at: indexPath)
+        self.hapticFeedback()
     }
 }
 

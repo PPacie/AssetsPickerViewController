@@ -26,7 +26,7 @@ DEPENDENCIES:
   - AssetsPickerViewController (from `../`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Device
     - Dimmer
     - FadeView
@@ -53,4 +53,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 7fd02be6c6728ec4eb6910019f6cf194e5ea58cd
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

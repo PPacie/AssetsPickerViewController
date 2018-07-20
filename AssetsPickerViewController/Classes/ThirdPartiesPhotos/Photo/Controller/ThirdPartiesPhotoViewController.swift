@@ -325,6 +325,7 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegate {
         select(asset: asset, at: indexPath)
         updateNavigationStatus()
         delegate?.thirdPartyAssetsPicker?(didSelect: asset, at: indexPath)
+        self.hapticFeedback()
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
@@ -335,6 +336,7 @@ extension ThirdPartiesPhotoViewController: UICollectionViewDelegate {
         let asset = assets[indexPath.row]
         deselect(asset: asset, at: indexPath)
         updateNavigationStatus()
+        self.hapticFeedback()
         //delegate?.assetsPicker?(controller: picker, didDeselect: asset, at: indexPath)
     }
 }
