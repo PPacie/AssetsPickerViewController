@@ -27,3 +27,8 @@
 /* No Permission */
 "Title_No_Permission" = "Cette application n'a pas accès à vos photos et vos vidéos.";
 "Message_No_Permission" = "Vous pouvez autoriser l'accès dans l'application Réglages > Confidentialité.";
+
+"DIALOG_AUTH_PHOTO_MESSAGE" = "Pour pouvoir utiliser la application, tu dois autoriser l'accès à tes photos.";
+
+"DIALOG_AUTH_PHOTO_TITLE" = "Accès aux photos non autorisé";
+"DIALOG_AUTH_OPEN_SETTINGS" = "Paramètres";

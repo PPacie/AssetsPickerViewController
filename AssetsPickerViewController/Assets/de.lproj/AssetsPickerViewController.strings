@@ -27,3 +27,7 @@
 /* No Permission */
 "Title_No_Permission" = "Diese App darf nicht auf Ihr Fotoalbum zugreifen.";
 "Message_No_Permission" = "Sie können den Zugriff in den Datenschutz Einstellungen erlauben.";
+
+"DIALOG_AUTH_PHOTO_TITLE" = "Zugriff auf Fotos nicht gestattet";
+"DIALOG_AUTH_PHOTO_MESSAGE" = "Um die Anwendung nutzen zu können, musst du den Zugriff auf deine Fotos erlauben.";
+"DIALOG_AUTH_OPEN_SETTINGS" = "Einstellungen";

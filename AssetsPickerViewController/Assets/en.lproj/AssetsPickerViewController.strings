@@ -27,3 +27,7 @@
 /* No Permission */
 "Title_No_Permission" = "This app does not have access to your photos or videos.";
 "Message_No_Permission" = "You can enable access in Privacy Settings.";
+
+"DIALOG_AUTH_PHOTO_TITLE" = "Photo Library Access Not Authorized";
+"DIALOG_AUTH_PHOTO_MESSAGE" = "In order to use the app you must grant access to your photos.";
+"DIALOG_AUTH_OPEN_SETTINGS" = "Open Settings";

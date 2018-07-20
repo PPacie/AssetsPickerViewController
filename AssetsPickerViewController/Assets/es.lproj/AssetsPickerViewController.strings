@@ -25,5 +25,9 @@
 "Message_No_Items_Camera" = "Puedes sincronizar fotos y vídeos en tu %@ a través de iTunes.";
 
 /* No Permission */
-"Title_No_Permission" = "Esta aplicación no tiene acceso a tus fotos o vídeos.";
+"Title_No_Permission" = "Esta aplicación no tiene acceso a Photo Library";
 "Message_No_Permission" = "Puedes habilitar el acceso en los ajustes de privacidad.";
+
+"DIALOG_AUTH_PHOTO_TITLE" = "Esta aplicación no tiene acceso a Photo Librar";
+"DIALOG_AUTH_PHOTO_MESSAGE" = "Puedes habilitar el acceso en los ajustes de privacidad.";
+"DIALOG_AUTH_OPEN_SETTINGS" = "Configuración";

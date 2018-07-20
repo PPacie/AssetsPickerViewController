@@ -27,3 +27,7 @@
 /* No Permission */
 "Title_No_Permission" = "La aplicación no tiene acceso a tus fotos o videos.";
 "Message_No_Permission" = "Puedes acceder en Ajustes/Privacidad.";
+
+"DIALOG_AUTH_PHOTO_TITLE" = "Esta aplicación no tiene acceso a Photo Librar";
+"DIALOG_AUTH_PHOTO_MESSAGE" = "Puedes habilitar el acceso en los ajustes de privacidad.";
+"DIALOG_AUTH_OPEN_SETTINGS" = "Configuración";

@@ -102,7 +102,13 @@ open class AssetsAlbumViewController: UIViewController {
                     self?.collectionView.reloadData()
                 }
             } else {
-                self?.dismiss(animated: true, completion: nil)
+                //Alert
+                let alertVC = UIAlertController(title: String(key:"DIALOG_AUTH_PHOTO_TITLE"), message: String(key:"DIALOG_AUTH_PHOTO_MESSAGE"), preferredStyle: .alert)
+                alertVC.addAction(UIAlertAction(title: String(key:"DIALOG_AUTH_OPEN_SETTINGS"), style: .default, handler: { (_) in                    
+                    UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
+                }))
+                
+                self?.present(alertVC, animated: true)
             }
         })
     }
