@@ -270,7 +270,9 @@ extension AssetsPhotoViewController {
         confirmButton.buttonPressedHandler = { [weak self] in
             guard let weakSelf = self else { return }
             weakSelf.activityIndicatorStartLoading()
-            weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                weakSelf.delegate?.assetsPicker(selected: weakSelf.selectedArray)
+            }
         }
         confirmButton.isHidden = true
     }
