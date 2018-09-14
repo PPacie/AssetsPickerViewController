@@ -30,7 +30,7 @@ open class AssetsPhotoViewController: UIViewController {
         return buttonItem
     }()
     
-    fileprivate let confirmButton = ConfirmButtonView(title: "Next".localizedUppercase)
+    fileprivate let confirmButton = ConfirmButtonView(title: String(key:"Next"))
     
     fileprivate let emptyView: AssetsEmptyView = {
         return AssetsEmptyView.newAutoLayout()
