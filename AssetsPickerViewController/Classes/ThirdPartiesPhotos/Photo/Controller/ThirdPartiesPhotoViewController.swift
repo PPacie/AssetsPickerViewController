@@ -25,7 +25,7 @@ open class ThirdPartiesPhotoViewController: UIViewController {
     // MARK: Properties
     fileprivate let cellReuseIdentifier: String = UUID().uuidString
     fileprivate let footerReuseIdentifier: String = UUID().uuidString
-    fileprivate let confirmButton = ConfirmButtonView(title:"NEXT".localizedUppercase)
+    fileprivate let confirmButton = ConfirmButtonView(title:"Next".localizedUppercase)
     fileprivate var selectedArray = [PhotoViewModel]()
     fileprivate var selectedMap = [String: PhotoViewModel]()
     fileprivate var didSetupConstraints = false

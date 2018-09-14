@@ -2,6 +2,7 @@
 /* Common */
 "Cancel" = "Cancel";
 "Done" = "Done";
+"Next" = "Next";
 
 /* Albums */
 "Title_Albums" = "Albums";
