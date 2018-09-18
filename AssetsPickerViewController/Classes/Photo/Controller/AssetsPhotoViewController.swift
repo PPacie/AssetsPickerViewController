@@ -103,7 +103,9 @@ open class AssetsPhotoViewController: UIViewController {
     
     open func activityIndicatorStartLoading() {
         DispatchQueue.main.async {
-            self.indicator.center = self.view.center
+            var center = self.view.center
+            center.y = 270
+            self.indicator.center = center
             self.indicator.startAnimating()
         }
     }
