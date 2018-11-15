@@ -461,7 +461,15 @@ extension AssetsPhotoViewController {
 extension AssetsPhotoViewController: UICollectionViewDelegate {
 
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return selectedArray.count < pickerConfig.maxItemsSelection
+        if selectedArray.count < pickerConfig.maxItemsSelection {
+            return true
+        } else {
+            //Haptic Feedback
+            if #available(iOS 10.0, *) {
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+            return false
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
